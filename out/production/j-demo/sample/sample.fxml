@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import com.jfoenix.controls.*?>
 <?import java.lang.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" type="JFXTabPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab text="Editor">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <JFXButton contentDisplay="CENTER" layoutX="32.0" layoutY="44.0" onMouseClicked="#onClicked" ripplerFill="#ffd0d0" text="Make fullscreen screenshot" textOverrun="WORD_ELLIPSIS" wrapText="true" />
+                  <JFXButton blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="47.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="152.0" ripplerFill="#e88282" text="Click" textOverrun="LEADING_ELLIPSIS" wrapText="true">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                  </JFXButton>
                </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
             </AnchorPane>
         </content>
       </Tab>
@@ -31,4 +28,4 @@
         </content>
       </Tab>
    </tabs>
-</fx:root>
+</JFXTabPane>
