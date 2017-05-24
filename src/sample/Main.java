@@ -13,14 +13,18 @@ public class Main extends Application {
 //    private JFXTabPane jfxTabPane;
     @Override
     public void start(Stage primaryStage) throws Exception{
+        // root Node - корневой узел
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         primaryStage.setTitle("Hello World");
 
         primaryStage.setIconified(false);
+
+        // scene - сцена, stage - подмостки
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
     }
+
 
 
     public static void main(String[] args) {
