@@ -16,7 +16,6 @@ public class Main extends Application {
 
         primaryStage.setIconified(false);
         primaryStage.setScene(new Scene(root, 300, 275));
-        primaryStage.getScene().setRoot(root);
         primaryStage.show();
     }
 
