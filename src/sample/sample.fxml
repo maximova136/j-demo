@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import javafx.scene.control.Tab?>
@@ -7,13 +13,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
    <tabs>
       <Tab text="Editor">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <JFXButton blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="47.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="152.0" ripplerFill="#e88282" text="Click" textOverrun="LEADING_ELLIPSIS" wrapText="true">
+                  <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="47.0" layoutY="33.0" mnemonicParsing="false" onAction="#onAction" prefHeight="25.0" prefWidth="152.0" ripplerFill="#e88282" text="Click" textOverrun="LEADING_ELLIPSIS" wrapText="true">
                      <font>
                         <Font size="26.0" />
                      </font>
