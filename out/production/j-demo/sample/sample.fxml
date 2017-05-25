@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<JFXTabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
+<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
    <tabs>
       <Tab text="Editor">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="380.0" prefWidth="600.0">
                <children>
-                  <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="47.0" layoutY="33.0" mnemonicParsing="false" onAction="#onAction" prefHeight="25.0" prefWidth="152.0" ripplerFill="#e88282" text="Click" textOverrun="LEADING_ELLIPSIS" wrapText="true">
+                  <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="48.0" layoutY="45.0" mnemonicParsing="false" onAction="#onAction" prefHeight="25.0" prefWidth="152.0" ripplerFill="#e88282" text="PrScr" textOverrun="LEADING_ELLIPSIS" wrapText="true">
                      <font>
                         <Font size="26.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="253.0" fitWidth="334.0" layoutX="224.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imageView" fitHeight="253.0" fitWidth="334.0" layoutX="224.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true" />
+                  <JFXToggleButton fx:id="chooseButton" layoutX="55.0" layoutY="101.0" mnemonicParsing="false" prefHeight="114.0" prefWidth="140.0" selected="true" text="Hide app" wrapText="true">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </JFXToggleButton>
                </children>
             </AnchorPane>
         </content>
