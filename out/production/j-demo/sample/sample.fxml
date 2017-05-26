@@ -14,7 +14,7 @@
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="380.0" prefWidth="600.0">
                <children>
-                  <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="48.0" layoutY="45.0" mnemonicParsing="false" onAction="#onAction" prefHeight="25.0" prefWidth="152.0" ripplerFill="#e88282" text="PrScr" textOverrun="LEADING_ELLIPSIS" wrapText="true">
+                  <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="48.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#onMouseClicked" prefHeight="25.0" prefWidth="152.0" ripplerFill="#e88282" text="PrScr" textOverrun="LEADING_ELLIPSIS" wrapText="true">
                      <font>
                         <Font size="26.0" />
                      </font>
