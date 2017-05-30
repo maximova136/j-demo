@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main extends Application implements NativeKeyListener {
-    
+
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
         System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
@@ -40,12 +40,11 @@ public class Main extends Application implements NativeKeyListener {
                 sc.captureFullScreen(true);
             }
         });
-        Platform.runLater( () -> {
-            sc.reloadImageView();
-        });
+//        Platform.runLater( () -> {
+//            sc.reloadImageView();
+//        });
 
     }
-
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
         System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
@@ -63,7 +62,6 @@ public class Main extends Application implements NativeKeyListener {
             handlers[i].setLevel(Level.OFF);
         }
 
-
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException ex) {
@@ -73,7 +71,7 @@ public class Main extends Application implements NativeKeyListener {
             System.exit(1);
         }
         GlobalScreen.addNativeKeyListener(new Main());
-
+        sc.initImageView();
     }
 
     private static ScreenshotController sc = new ScreenshotController();
@@ -86,7 +84,7 @@ public class Main extends Application implements NativeKeyListener {
         Parent root = loader.load();
 
         sc.setPrimaryStage(primaryStage);
-        sc.initImageView();
+//        sc.initImageView();
         loader.setController(sc);
 
         primaryStage.setTitle("Hello World");
@@ -97,12 +95,13 @@ public class Main extends Application implements NativeKeyListener {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 System.out.println("minimized: " + newValue.booleanValue());
             }
+            
+
         });
 
         // scene - сцена, stage - подмостки
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-
 
     }
 
