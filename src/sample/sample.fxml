@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXToggleButton?>
@@ -10,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
+<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
    <tabs>
       <Tab text="Editor">
         <content>
@@ -27,11 +34,16 @@
                         <Font size="17.0" />
                      </font>
                   </JFXToggleButton>
-                  <StackPane prefHeight="150.0" prefWidth="200.0" layoutX="100.0" layoutY="300.0">
+                  <JFXButton fx:id="ButtonCanvas" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="14.0" layoutY="196.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedCanvas" prefHeight="25.0" prefWidth="152.0" ripplerFill="#9d83e5" text="Image" textOverrun="LEADING_ELLIPSIS" wrapText="true">
+                     <font>
+                        <Font size="26.0" />
+                     </font>
+                  </JFXButton>
+                  <StackPane layoutX="100.0" layoutY="300.0" prefHeight="150.0" prefWidth="200.0">
                      <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
-                              <Canvas fx:id="canvas" height="146.0" width="368.0" />
+                              <Canvas fx:id="canvas" height="146.0" />
                            </children>
                         </StackPane>
                      </children>

@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 //import com.sun.glass.ui.Robot;
 import javafx.stage.Stage;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 
 import java.awt.*;
@@ -43,7 +44,8 @@ public class ScreenshotController {
     }
     @FXML
     private JFXToggleButton chooseButton;
-
+    @FXML
+    private Canvas canvas;
     @FXML
     public void onMouseClicked(){
         System.out.println("on mouse clicked");
@@ -52,9 +54,15 @@ public class ScreenshotController {
     }
 
     @FXML
-    private Canvas canvas;
+    public void onMouseClickedCanvas(){
+        System.out.println("on mouse clicked Canvas");
+        GraphicsContext g = canvas.getGraphicsContext2D();
+        Image backImage = new Image("http://animal-store.ru/img/2015/050219/2042896");
+        double widthImage  = backImage.getWidth();
+        double heightImage = backImage.getHeight();
+        g.drawImage(backImage, 0, 0, widthImage, heightImage); // arg: X, Y, Width, Height
+    }
 
-    @FXML
     public void initialize() {
         System.out.println("initialize");
 //        imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
@@ -122,7 +130,7 @@ public class ScreenshotController {
                 primaryStage.setIconified(true);
             }
             Robot robot = new Robot();
-//            robot.delay(500);
+            robot.delay(500);
             screenCapture = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
             ImageIO.write(screenCapture, "png", new File("screen_" + Integer.toString(counter) + ".png"));
             counter++;
@@ -138,13 +146,12 @@ public class ScreenshotController {
             e.printStackTrace();
         }
     }
+
     public void reloadImageView() {
 
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
-
         imageView.setImage(image);
-
    }
 
     private static Stage primaryStage;
