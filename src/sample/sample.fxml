@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXToggleButton?>
@@ -17,7 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
+<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
    <tabs>
       <Tab text="Editor">
         <content>
@@ -39,7 +32,7 @@
                         <Font size="26.0" />
                      </font>
                   </JFXButton>
-                  <StackPane layoutX="100.0" layoutY="300.0" prefHeight="150.0" prefWidth="200.0">
+                  <StackPane layoutX="213.0" layoutY="28.0" prefHeight="136.0" prefWidth="224.0">
                      <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>

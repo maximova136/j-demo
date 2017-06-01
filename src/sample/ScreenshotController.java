@@ -13,6 +13,8 @@ import javafx.scene.canvas.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 //import com.sun.glass.ui.Robot;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
 import javax.annotation.Resource;
@@ -64,10 +66,11 @@ public class ScreenshotController {
     }
 
     public void initialize() {
-        System.out.println("initialize");
+        System.out.println("initialize controller");
 //        imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
         imageView.setMouseTransparent(true);
-        GraphicsContext g = canvas.getGraphicsContext2D();
+//        canvas = new Canvas();
+//        GraphicsContext g = canvas.getGraphicsContext2D();
 
         // Get screen dimensions and set the canvas accordingly
 //        Dimension screenSize = getScreenSize();
@@ -76,7 +79,7 @@ public class ScreenshotController {
         canvas.setHeight(screenHeight/1.5);
         canvas.setWidth(screenWidth/1.5);
 
-        canvas.setStyle("-fx-background-color: rgba(0, 255, 255, 100);");  //Set the background to be translucent
+//        canvas.setStyle("-fx-background-color: rgba(0, 255, 255, 100);");  //Set the background to be translucent
 
 //        canvas.setOnMouseDragged(e -> {
 ////            double size = Double.parseDouble(brushSize.getText());
@@ -135,10 +138,27 @@ public class ScreenshotController {
             ImageIO.write(screenCapture, "png", new File("screen_" + Integer.toString(counter) + ".png"));
             counter++;
 
-            reloadImageView();
-            primaryStage.setIconified(false);
-
 //            reloadImageView();
+//            Image image = SwingFXUtils.toFXImage(screenCapture, null);
+            //            if (canvas == null) {
+//                System.out.println("canvas null");
+//                canvas = new Canvas(screenWidth/1.5, screenHeight/1.5);
+//            }
+//            GraphicsContext g = canvas.getGraphicsContext2D();
+////            Image backImage = new Image("http://animal-store.ru/img/2015/050219/2042896");
+////            double widthImage  = backImage.getWidth();
+////            double heightImage = backImage.getHeight();
+//            Image image = SwingFXUtils.toFXImage(screenCapture, null);
+//            image = SwingFXUtils.toFXImage(screenCapture, null);
+//            if (imageView.getImage() != image) {
+//                imageView.setImage(image);
+//
+//            }
+reloadImageView();
+//            g.drawImage(backImage, 0, 0, widthImage, heightImage); // arg: X, Y, Width, Height
+            primaryStage.setIconified(false);
+//            g.drawImage(image, 0,0);
+            reloadImageView();
 
         } catch (AWTException ex ){
             Logger.getLogger(ScreenshotController.class.getName()).log(Level.ALL, null, ex);
@@ -151,7 +171,12 @@ public class ScreenshotController {
 
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
-        imageView.setImage(image);
+        if (imageView.getImage() != image) {
+            System.out.println("here ");
+            imageView.setImage(image);
+        }
+        System.out.println("out reload");
+//        imageView.setImage(image);
    }
 
     private static Stage primaryStage;

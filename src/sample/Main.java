@@ -38,6 +38,7 @@ public class Main extends Application implements NativeKeyListener {
         Platform.runLater( () -> {
             if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
                 sc.captureFullScreen(true);
+
             }
         });
 //        Platform.runLater( () -> {
@@ -71,7 +72,9 @@ public class Main extends Application implements NativeKeyListener {
             System.exit(1);
         }
         GlobalScreen.addNativeKeyListener(new Main());
-        sc.initImageView();
+        Platform.runLater( () -> {
+            sc.initImageView();
+        });
     }
 
     private static ScreenshotController sc = new ScreenshotController();
