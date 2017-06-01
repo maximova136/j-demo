@@ -9,10 +9,16 @@ import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.*;
+import javafx.geometry.Insets;
 import javafx.scene.canvas.*;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 //import com.sun.glass.ui.Robot;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 import javax.annotation.Resource;
@@ -65,7 +71,7 @@ public class ScreenshotController {
 
     public void initialize() {
         System.out.println("initialize");
-//        imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
+        //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
         imageView.setMouseTransparent(true);
         GraphicsContext g = canvas.getGraphicsContext2D();
 
@@ -114,6 +120,22 @@ public class ScreenshotController {
 //        });
 
 
+        //===========================================
+        //=======Catalogue===========================
+        //===========================================
+
+        contentGalery();
+
+        scrollY.setMin(0);
+//        scrollY.setMax(100);
+        scrollY.setValue(0);
+
+        tilePane.setPadding(new Insets(10, 10, 10, 10));
+        tilePane.setVgap(15);
+        tilePane.setHgap(20);
+        tilePane.setStyle("-fx-background-color: 000000;");
+        tilePane.setAlignment(Pos.TOP_CENTER);
+
     }
 
     static private int counter = 0;
@@ -152,11 +174,48 @@ public class ScreenshotController {
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
         imageView.setImage(image);
-   }
+    }
 
     private static Stage primaryStage;
     public void setPrimaryStage(Stage stage){
         this.primaryStage = stage;
     }
 
+
+    //===========================================
+    //=======Catalogue===========================
+    //===========================================
+
+    @FXML
+    private ScrollBar scrollY;
+    @FXML
+    private TilePane tilePane;
+    @FXML
+    private ImageView imageView00, imageView01, imageView02, imageView03, imageView10, imageView11, imageView12,
+            imageView13, imageView20, imageView21, imageView22, imageView23;
+    @FXML
+    private void scrollMenu(){
+        scrollY.setMax(primaryStage.getHeight()/0.7);
+//        scrollY.setMax();
+        System.out.println(primaryStage.getHeight());
+        scrollY.valueProperty().addListener(event->{
+            tilePane.setTranslateY(-scrollY.getValue());
+        });
+    }
+
+    private void contentGalery(){
+        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
+        imageView00.setImage(image);
+        imageView01.setImage(image);
+        imageView02.setImage(image);
+        imageView03.setImage(image);
+        imageView10.setImage(image);
+        imageView11.setImage(image);
+        imageView12.setImage(image);
+        imageView13.setImage(image);
+        imageView20.setImage(image);
+        imageView21.setImage(image);
+        imageView22.setImage(image);
+        imageView23.setImage(image);
+    }
 }
