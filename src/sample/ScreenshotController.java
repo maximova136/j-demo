@@ -3,28 +3,42 @@ package sample;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXToggleButton;
+//import com.sun.javafx.geom.Rectangle;
+//import com.sun.javafx.tk.Toolkit;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.fxml.Initializable;
+import javafx.scene.canvas.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+//import com.sun.glass.ui.Robot;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //import com.sun.javafx.geom.Rectangle;
 //import com.sun.javafx.tk.Toolkit;
 //import com.sun.glass.ui.Robot;
+import javafx.scene.canvas.Canvas;
 
 
 public class ScreenshotController {
@@ -62,8 +76,8 @@ public class ScreenshotController {
     }
 
     public void initialize() {
-        System.out.println("initialize");
-        //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
+        System.out.println("initialize controller");
+//        imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
         imageView.setMouseTransparent(true);
         GraphicsContext g = canvas.getGraphicsContext2D();
 
@@ -162,8 +176,13 @@ public class ScreenshotController {
 
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
-        imageView.setImage(image);
-    }
+        if (imageView.getImage() != image) {
+            System.out.println("here ");
+            imageView.setImage(image);
+        }
+        System.out.println("out reload");
+//        imageView.setImage(image);
+   }
 
     private static Stage primaryStage;
 
