@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXTabPane?>
-<?import com.jfoenix.controls.JFXToggleButton?>
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollBar?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
 
 <JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
    <tabs>
@@ -58,29 +43,10 @@
         </content>
       </Tab>
       <Tab text="Catalogue">
-        <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="380.0" prefWidth="600.0">
-                <children>
-                  <TilePane fx:id="tilePane" prefHeight="200.0" prefWidth="600.0" AnchorPane.bottomAnchor="-235.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <ImageView fx:id="imageView00" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView01" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView02" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView03" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView10" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView11" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView12" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView13" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView20" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView21" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView22" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView fx:id="imageView23" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                     </children>
-                  </TilePane>
-                  <ScrollBar fx:id="scrollY" onMouseClicked="#scrollMenu" orientation="VERTICAL" prefHeight="369.0" prefWidth="12.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-            </AnchorPane>
-        </content>
+          <JFXScrollPane fx:id="scrollPane" >
+                  <JFXMasonryPane fx:id="masonryPane">
+                  </JFXMasonryPane>
+          </JFXScrollPane>
       </Tab>
    </tabs>
 </JFXTabPane>
