@@ -17,6 +17,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class Main extends Application implements NativeKeyListener {
 
     @Override
@@ -35,11 +36,12 @@ public class Main extends Application implements NativeKeyListener {
     public void nativeKeyReleased(NativeKeyEvent e) {
         System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
 //        sc.captureFullScreen(true);
-        Platform.runLater( () -> {
-            if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
+        if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
+            Platform.runLater( () -> {
                 sc.captureFullScreen(true);
-            }
-        });
+            });
+        }
+
 //        Platform.runLater( () -> {
 //            sc.reloadImageView();
 //        });
@@ -71,7 +73,7 @@ public class Main extends Application implements NativeKeyListener {
             System.exit(1);
         }
         GlobalScreen.addNativeKeyListener(new Main());
-        sc.initImageView();
+//        sc.initImageView();
     }
 
     private static ScreenshotController sc = new ScreenshotController();

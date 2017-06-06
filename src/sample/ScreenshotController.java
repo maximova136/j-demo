@@ -3,6 +3,7 @@ package sample;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXToggleButton;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -31,12 +32,12 @@ public class ScreenshotController {
     @FXML
     private JFXButton clickButton;
     @FXML
-    private ImageView imageView;
-    public void initImageView(){
-        System.out.println("init image view");
+    public ImageView imageView;
 
-        imageView = new ImageView();
-    }
+//    public void initImageView(){
+//        System.out.println("init image view");
+//        imageView = new ImageView();
+//    }
     @FXML
     private JFXToggleButton chooseButton;
     @FXML
@@ -47,7 +48,7 @@ public class ScreenshotController {
         captureFullScreen(chooseButton.isSelected()); //chooseButton.isSelected());
 //        reloadImageView();
     }
-
+    private Thread thread;
     @FXML
     public void onMouseClickedCanvas(){
         System.out.println("on mouse clicked Canvas");
@@ -59,6 +60,7 @@ public class ScreenshotController {
     }
 
     public void initialize() {
+        thread = new Thread(new ChildrenThread(this));
         System.out.println("initialize");
         //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
         imageView.setMouseTransparent(true);
@@ -71,7 +73,6 @@ public class ScreenshotController {
         canvas.setHeight(screenHeight/1.5);
         canvas.setWidth(screenWidth/1.5);
 
-        canvas.setStyle("-fx-background-color: rgba(0, 255, 255, 100);");  //Set the background to be translucent
 
 //        canvas.setOnMouseDragged(e -> {
 ////            double size = Double.parseDouble(brushSize.getText());
@@ -113,8 +114,9 @@ public class ScreenshotController {
         //=======Catalogue===========================
         //===========================================
 
+
         ArrayList<Node> children = new ArrayList<>();
-        contentGalery(children);
+        contentGallery(children);
         masonryPane.getChildren().addAll(children);
     }
 
@@ -122,7 +124,7 @@ public class ScreenshotController {
     public static int screenWidth = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     public static int screenHeight = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
-    private static BufferedImage screenCapture;
+    public static BufferedImage screenCapture;
 
     public void captureFullScreen(boolean isHideEnabled) {
         try {
@@ -136,12 +138,9 @@ public class ScreenshotController {
             screenCapture = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
             ImageIO.write(screenCapture, "png", new File("screen_" + Integer.toString(counter) + ".png"));
             counter++;
-
-            reloadImageView();
             primaryStage.setIconified(false);
-
-//            reloadImageView();
-
+            thread.start();
+            reloadImageView();
         } catch (AWTException ex ){
             Logger.getLogger(ScreenshotController.class.getName()).log(Level.ALL, null, ex);
         } catch (IOException e) {
@@ -150,10 +149,13 @@ public class ScreenshotController {
     }
 
     public void reloadImageView() {
-
+        System.out.println("========================");
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
-        imageView.setImage(image);
+        Platform.runLater(() -> {
+            imageView.setImage(image);
+        });
+//        imageView.setImage(image);
     }
 
     private static Stage primaryStage;
@@ -169,7 +171,7 @@ public class ScreenshotController {
     @FXML
     JFXMasonryPane masonryPane;
 
-    private void contentGalery(ArrayList children){
+    private void contentGallery(ArrayList children){
 
 //        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
 //        Image image2 = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");

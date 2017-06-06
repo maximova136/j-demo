@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import com.jfoenix.controls.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
@@ -33,7 +34,7 @@
                      <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
-                              <Canvas fx:id="canvas" height="146.0" />
+                              <Canvas fx:id="canvas" height="151.0" width="200.0" />
                            </children>
                         </StackPane>
                      </children>
@@ -43,10 +44,14 @@
         </content>
       </Tab>
       <Tab text="Catalogue">
-          <JFXScrollPane fx:id="scrollPane" >
-                  <JFXMasonryPane fx:id="masonryPane">
+         <content>
+             <JFXScrollPane fx:id="scrollPane">
+                <content>
+                        <JFXMasonryPane fx:id="masonryPane">
                   </JFXMasonryPane>
-          </JFXScrollPane>
+                </content>
+             </JFXScrollPane>
+         </content>
       </Tab>
    </tabs>
 </JFXTabPane>
