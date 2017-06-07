@@ -26,7 +26,10 @@ import java.util.logging.Logger;
 //import com.sun.javafx.tk.Toolkit;
 //import com.sun.glass.ui.Robot;
 
+
 public class ScreenshotController {
+    private static CloudHost cloudHost = new CloudHost();
+
 
     @FXML
     private JFXButton clickButton;
@@ -35,7 +38,7 @@ public class ScreenshotController {
     public void initImageView(){
         System.out.println("init image view");
 
-        imageView = new ImageView();
+//        imageView = new ImageView();
     }
     @FXML
     private JFXToggleButton chooseButton;
@@ -134,7 +137,13 @@ public class ScreenshotController {
             Robot robot = new Robot();
             robot.delay(500);
             screenCapture = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-            ImageIO.write(screenCapture, "png", new File("screen_" + Integer.toString(counter) + ".png"));
+            File fileImg = new File("screen_" + Integer.toString(counter) + ".png");
+            ImageIO.write(screenCapture, "png", fileImg);
+
+
+            cloudHost.upload(fileImg);
+
+            System.out.println(cloudHost.getLastResultUrl());
             counter++;
 
             reloadImageView();
@@ -157,6 +166,7 @@ public class ScreenshotController {
     }
 
     private static Stage primaryStage;
+
     public void setPrimaryStage(Stage stage){
         this.primaryStage = stage;
     }
