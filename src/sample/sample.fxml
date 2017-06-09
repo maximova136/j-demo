@@ -45,12 +45,23 @@
       </Tab>
       <Tab text="Catalogue">
          <content>
-             <JFXScrollPane fx:id="scrollPane">
-                <content>
-                        <JFXMasonryPane fx:id="masonryPane">
-                  </JFXMasonryPane>
-                </content>
-             </JFXScrollPane>
+            <SplitPane dividerPositions="0.3">
+               <items>
+                  <VBox>
+                      <children>
+                          <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" fx:id="imagePreview" />
+                          <JFXButton prefHeight="25.0" prefWidth="180.0" text="Button 1" />
+                          <JFXButton prefHeight="25.0" prefWidth="180.0" text="Button 2" />
+                      </children>
+                  </VBox>
+                   <JFXScrollPane fx:id="scrollPane" >
+                       <content>
+                           <JFXMasonryPane fx:id="masonryPane">
+                           </JFXMasonryPane>
+                       </content>
+                   </JFXScrollPane>
+               </items>
+            </SplitPane>
          </content>
       </Tab>
    </tabs>

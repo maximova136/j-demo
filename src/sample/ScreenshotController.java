@@ -2,6 +2,7 @@ package sample;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXMasonryPane;
+import com.jfoenix.controls.JFXScrollPane;
 import com.jfoenix.controls.JFXToggleButton;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -73,6 +74,15 @@ public class ScreenshotController {
         canvas.setHeight(screenHeight/1.5);
         canvas.setWidth(screenWidth/1.5);
 
+        ////       ____
+        ////      /----\
+        ////      |----|
+        ////      |----|
+        ////      |----|                  ,
+        ////      |----|        this is XYN
+        ////     /   |  \
+        ////    |    |   |
+        ////     \___|__/
 
 //        canvas.setOnMouseDragged(e -> {
 ////            double size = Double.parseDouble(brushSize.getText());
@@ -114,10 +124,17 @@ public class ScreenshotController {
         //=======Catalogue===========================
         //===========================================
 
-
         ArrayList<Node> children = new ArrayList<>();
         contentGallery(children);
         masonryPane.getChildren().addAll(children);
+
+        scrollPane.setStyle("-fx-text-fill:BLUE; -fx-font-size: 20;"); //это скроллер
+//        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
+        scrollPane.getBottomBar().resize(10.0, 10.0);
+//        scrollPane.getTopBar().
+        scrollPane.getMainHeader().setVisible(false);
+        scrollPane.getMainHeader().getNodeOrientation();
+        imagePreview.setImage(null);
     }
 
     static private int counter = 0;
@@ -170,6 +187,11 @@ public class ScreenshotController {
 
     @FXML
     JFXMasonryPane masonryPane;
+    @FXML
+    ImageView imagePreview;
+    @FXML
+    JFXScrollPane scrollPane;
+
 
     private void contentGallery(ArrayList children){
 
@@ -187,14 +209,18 @@ public class ScreenshotController {
         Random r = new Random();
         for (int i = 0; i < 30; i++) {
             javafx.scene.control.Label label = new javafx.scene.control.Label();
-            label.setPrefSize(200, 200);
+            label.setPrefSize(300, 200);
             javafx.scene.control.Label label2 = new javafx.scene.control.Label();
-            label2.setPrefSize(200, 200);
+            label2.setPrefSize(300, 200);
 //            label.setGraphic(testImageView1);
 //            label2.setGraphic(testImageView2);
             label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
             children.add(label);
 //        children.add(label2);
         }
+    }
+
+    private void contentImagePreview(){
+
     }
 }
