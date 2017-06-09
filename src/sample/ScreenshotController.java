@@ -18,12 +18,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import com.sun.javafx.geom.Rectangle;
-//import com.sun.javafx.tk.Toolkit;
-//import com.sun.glass.ui.Robot;
+import static sample.Main.db;
 
 
 public class ScreenshotController {
@@ -48,7 +47,7 @@ public class ScreenshotController {
         captureFullScreen(chooseButton.isSelected());
 //        reloadImageView();
     }
-
+    private Thread thread;
     @FXML
     public void onMouseClickedCanvas(){
         System.out.println("on mouse clicked Canvas");
@@ -60,21 +59,28 @@ public class ScreenshotController {
     }
 
     public void initialize() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
-                imageView.setMouseTransparent(true);
-                GraphicsContext g = canvas.getGraphicsContext2D();
+        thread = new Thread(new ChildrenThread(this));
+        System.out.println("initialize");
+        //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
+        imageView.setMouseTransparent(true);
+        GraphicsContext g = canvas.getGraphicsContext2D();
 
-                // Get screen dimensions and set the canvas accordingly
+        // Get screen dimensions and set the canvas accordingly
 //        Dimension screenSize = getScreenSize();
 //        double screenWidth = screenSize.getWidth();
 //        double screenHeight = screenSize.getHeight();
-                canvas.setHeight(screenHeight/1.5);
-                canvas.setWidth(screenWidth/1.5);
+        canvas.setHeight(screenHeight/1.5);
+        canvas.setWidth(screenWidth/1.5);
 
-                canvas.setStyle("-fx-background-color: rgba(0, 255, 255, 100);");  //Set the background to be translucent
+        ////       ____
+        ////      /----\
+        ////      |----|
+        ////      |----|
+        ////      |----|                  ,
+        ////      |----|        this is XYN
+        ////     /   |  \
+        ////    |    |   |
+        ////     \___|__/
 
 //        canvas.setOnMouseDragged(e -> {
 ////            double size = Double.parseDouble(brushSize.getText());
@@ -112,28 +118,31 @@ public class ScreenshotController {
 //        });
 
 
-                //===========================================
-                //=======Catalogue===========================
-                //===========================================
+        //===========================================
+        //=======Catalogue===========================
+        //===========================================
 
-                ArrayList<Node> children = new ArrayList<>();
-                contentGalery(children);
-                masonryPane.getChildren().addAll(children);
+        ArrayList<Node> children = new ArrayList<>();
+        contentGallery(children);
+        masonryPane.getChildren().addAll(children);
 
+        scrollPane.setStyle("-fx-font-size: 20;");
+        scrollPane.getMainHeader().setVisible(false);
+//        scrollPane.getMainHeader().setStyle("-fx-background-color: #DFB951;");
+        scrollPane.getCondensedHeader().setVisible(false);
+//        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
+//        scrollPane.getMidBar().setVisible(false);
 
-                spinner.setVisible(false);
+        imagePreview.setImage(null);
 
-            }
-        });
-        System.out.println("initialize");
-
+        spinner.setVisible(false);
     }
 
     static private int counter = 0;
     public static int screenWidth = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     public static int screenHeight = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
-    private static BufferedImage screenCapture;
+    public static BufferedImage screenCapture;
 
     public void captureFullScreen(boolean isHideEnabled) {
         try {
@@ -145,16 +154,11 @@ public class ScreenshotController {
             Robot robot = new Robot();
             robot.delay(500);
             screenCapture = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-            File fileImg = new File("screen_" + Integer.toString(counter) + ".png");
-            ImageIO.write(screenCapture, "png", fileImg);
-
+            ImageIO.write(screenCapture, "png", new File("screen_" + Integer.toString(counter) + ".png"));
             counter++;
-
-            reloadImageView();
             primaryStage.setIconified(false);
-
-//            reloadImageView();
-
+            thread.start();
+            reloadImageView();
         } catch (AWTException ex ){
             Logger.getLogger(ScreenshotController.class.getName()).log(Level.ALL, null, ex);
         } catch (IOException e) {
@@ -163,15 +167,13 @@ public class ScreenshotController {
     }
 
     public void reloadImageView() {
-
+        System.out.println("========================");
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                imageView.setImage(image);
-            }
+        Platform.runLater(() -> {
+            imageView.setImage(image);
         });
+
     }
 
     private static Stage primaryStage;
@@ -187,8 +189,12 @@ public class ScreenshotController {
 
     @FXML
     JFXMasonryPane masonryPane;
+    @FXML
+    ImageView imagePreview;
+    @FXML
+    JFXScrollPane scrollPane;
 
-    private void contentGalery(ArrayList children){
+    private void contentGallery(ArrayList children){
 
 //        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
 //        Image image2 = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
@@ -204,9 +210,9 @@ public class ScreenshotController {
         Random r = new Random();
         for (int i = 0; i < 30; i++) {
             javafx.scene.control.Label label = new javafx.scene.control.Label();
-            label.setPrefSize(200, 200);
+            label.setPrefSize(300, 200);
             javafx.scene.control.Label label2 = new javafx.scene.control.Label();
-            label2.setPrefSize(200, 200);
+            label2.setPrefSize(300, 200);
 //            label.setGraphic(testImageView1);
 //            label2.setGraphic(testImageView2);
             label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
@@ -215,6 +221,8 @@ public class ScreenshotController {
         }
     }
 
+
+
     @FXML
     JFXSpinner spinner;
 
@@ -222,7 +230,6 @@ public class ScreenshotController {
     JFXButton uploadButton;
     static boolean isUploadEnabled = false;
 
-    @FXML
     public void onUploadClicked(){
         if (imageView.getImage() != null) { // TODO change on canvas
             if (isUploadEnabled) { // Cancel uploading ???
@@ -262,5 +269,28 @@ public class ScreenshotController {
             System.out.println("oops, canvas is empty");
             return;
         }
+
+/////////////// DB ////////////////
+    private void contentImagePreview(){
+
+    }
+
+    @FXML
+    public void writeToDB(){
+        Scanner in = new Scanner(System.in);
+        System.out.println("введи тестовые данные");
+        String urlid = in.nextLine();
+        String url = in.nextLine();
+        db.writeDB(urlid, url);
+        db.showDB();
+    }
+
+    @FXML
+    public void removeDB(){
+        Scanner in = new Scanner(System.in);
+        System.out.println("введи тестовые данные");
+        int number = in.nextInt();
+        db.removeDB(number);
+
     }
 }
