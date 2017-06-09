@@ -22,3 +22,6 @@
 hs_err_pid*
 .idea/workspace.xml
 *.png
+.idea/libraries/jfoenix.xml
+out/production/j-demo/sample/sample.fxml
+.idea/libraries/jnativehook_2_1_0.xml

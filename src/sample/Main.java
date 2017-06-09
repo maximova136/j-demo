@@ -17,6 +17,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class Main extends Application implements NativeKeyListener {
 
     @Override
@@ -36,10 +37,11 @@ public class Main extends Application implements NativeKeyListener {
         System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
 //        sc.captureFullScreen(true);
         if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
-            Platform.runLater(() -> {
+            Platform.runLater( () -> {
                 sc.captureFullScreen(true);
             });
         }
+
 //        Platform.runLater( () -> {
 //            sc.reloadImageView();
 //        });
@@ -50,11 +52,17 @@ public class Main extends Application implements NativeKeyListener {
         System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
     }
 
+    public static DbHandler db;
+
     @Override
     public void init() {
         // Get the logger for "org.jnativehook" and set the level to off.
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
         logger.setLevel(Level.OFF);
+
+        db = new DbHandler();
+        db.onCreateDB();
+        db.createTable();
 
         // Change the level for all handlers attached to the default logger.
         Handler[] handlers = Logger.getLogger("").getHandlers();
@@ -71,7 +79,7 @@ public class Main extends Application implements NativeKeyListener {
             System.exit(1);
         }
         GlobalScreen.addNativeKeyListener(new Main());
-        sc.initImageView();
+//        sc.initImageView();
     }
 
     private static ScreenshotController sc = new ScreenshotController();
