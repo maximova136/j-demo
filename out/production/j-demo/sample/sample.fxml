@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import com.jfoenix.controls.JFXScrollPane?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
-<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
+<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
    <tabs>
       <Tab text="Editor">
         <content>
@@ -38,12 +44,14 @@
                         </StackPane>
                      </children>
                   </StackPane>
+                  <JFXButton fx:id="uploadButton" layoutX="373.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" text="Upload" />
+                  <JFXSpinner fx:id="spinner" layoutX="442.0" layoutY="309.0" prefHeight="150.0" prefWidth="200.0" />
                </children>
             </AnchorPane>
         </content>
       </Tab>
       <Tab text="Catalogue">
-          <JFXScrollPane fx:id="scrollPane" >
+          <JFXScrollPane fx:id="scrollPane">
                   <JFXMasonryPane fx:id="masonryPane">
                   </JFXMasonryPane>
           </JFXScrollPane>

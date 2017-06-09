@@ -1,8 +1,7 @@
 package sample;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXMasonryPane;
-import com.jfoenix.controls.JFXToggleButton;
+import com.jfoenix.controls.*;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -37,7 +36,6 @@ public class ScreenshotController {
     private ImageView imageView;
     public void initImageView(){
         System.out.println("init image view");
-
 //        imageView = new ImageView();
     }
     @FXML
@@ -47,7 +45,7 @@ public class ScreenshotController {
     @FXML
     public void onMouseClicked(){
         System.out.println("on mouse clicked");
-        captureFullScreen(chooseButton.isSelected()); //chooseButton.isSelected());
+        captureFullScreen(chooseButton.isSelected());
 //        reloadImageView();
     }
 
@@ -62,19 +60,21 @@ public class ScreenshotController {
     }
 
     public void initialize() {
-        System.out.println("initialize");
-        //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
-        imageView.setMouseTransparent(true);
-        GraphicsContext g = canvas.getGraphicsContext2D();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
+                imageView.setMouseTransparent(true);
+                GraphicsContext g = canvas.getGraphicsContext2D();
 
-        // Get screen dimensions and set the canvas accordingly
+                // Get screen dimensions and set the canvas accordingly
 //        Dimension screenSize = getScreenSize();
 //        double screenWidth = screenSize.getWidth();
 //        double screenHeight = screenSize.getHeight();
-        canvas.setHeight(screenHeight/1.5);
-        canvas.setWidth(screenWidth/1.5);
+                canvas.setHeight(screenHeight/1.5);
+                canvas.setWidth(screenWidth/1.5);
 
-        canvas.setStyle("-fx-background-color: rgba(0, 255, 255, 100);");  //Set the background to be translucent
+                canvas.setStyle("-fx-background-color: rgba(0, 255, 255, 100);");  //Set the background to be translucent
 
 //        canvas.setOnMouseDragged(e -> {
 ////            double size = Double.parseDouble(brushSize.getText());
@@ -112,13 +112,21 @@ public class ScreenshotController {
 //        });
 
 
-        //===========================================
-        //=======Catalogue===========================
-        //===========================================
+                //===========================================
+                //=======Catalogue===========================
+                //===========================================
 
-        ArrayList<Node> children = new ArrayList<>();
-        contentGalery(children);
-        masonryPane.getChildren().addAll(children);
+                ArrayList<Node> children = new ArrayList<>();
+                contentGalery(children);
+                masonryPane.getChildren().addAll(children);
+
+
+                spinner.setVisible(false);
+
+            }
+        });
+        System.out.println("initialize");
+
     }
 
     static private int counter = 0;
@@ -140,10 +148,6 @@ public class ScreenshotController {
             File fileImg = new File("screen_" + Integer.toString(counter) + ".png");
             ImageIO.write(screenCapture, "png", fileImg);
 
-
-            cloudHost.upload(fileImg);
-
-            System.out.println(cloudHost.getLastResultUrl());
             counter++;
 
             reloadImageView();
@@ -162,7 +166,12 @@ public class ScreenshotController {
 
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
-        imageView.setImage(image);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImage(image);
+            }
+        });
     }
 
     private static Stage primaryStage;
@@ -203,6 +212,55 @@ public class ScreenshotController {
             label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
             children.add(label);
 //        children.add(label2);
+        }
+    }
+
+    @FXML
+    JFXSpinner spinner;
+
+    @FXML
+    JFXButton uploadButton;
+    static boolean isUploadEnabled = false;
+
+    @FXML
+    public void onUploadClicked(){
+        if (imageView.getImage() != null) { // TODO change on canvas
+            if (isUploadEnabled) { // Cancel uploading ???
+                System.out.println("on mouse clicked upload cancel");
+
+                uploadButton.setCancelButton(false);
+                uploadButton.setText("Upload");
+                spinner.setVisible(false);
+                isUploadEnabled = false;
+            } else { // Uploading
+                System.out.println("on mouse clicked upload");
+                uploadButton.setCancelButton(true);
+                uploadButton.setText("Cancel");
+                isUploadEnabled = true;
+                spinner.setVisible(true);
+
+                // TODO add uploading from canvas
+                File fileImg = new File("screen_" + Integer.toString(counter) + ".png");
+                BufferedImage bImage = SwingFXUtils.fromFXImage(imageView.getImage(), null);
+                try {
+                    ImageIO.write(bImage, "png", fileImg);
+                    cloudHost.upload(fileImg);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    uploadButton.setCancelButton(false);
+                    uploadButton.setText("Upload");
+                    spinner.setVisible(false);
+                    isUploadEnabled = false;
+                }
+
+            System.out.println(cloudHost.getLastImageUrl());
+            System.out.println(cloudHost.getLastPublicId());
+            System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
+            }
+        } else {
+            System.out.println("oops, canvas is empty");
+            return;
         }
     }
 }

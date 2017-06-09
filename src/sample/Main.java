@@ -35,11 +35,11 @@ public class Main extends Application implements NativeKeyListener {
     public void nativeKeyReleased(NativeKeyEvent e) {
         System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
 //        sc.captureFullScreen(true);
-        Platform.runLater( () -> {
-            if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
+        if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
+            Platform.runLater(() -> {
                 sc.captureFullScreen(true);
-            }
-        });
+            });
+        }
 //        Platform.runLater( () -> {
 //            sc.reloadImageView();
 //        });
