@@ -21,8 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static sample.Main.db;
 
 //import com.sun.javafx.geom.Rectangle;
 //import com.sun.javafx.tk.Toolkit;
@@ -128,12 +131,14 @@ public class ScreenshotController {
         contentGallery(children);
         masonryPane.getChildren().addAll(children);
 
-        scrollPane.setStyle("-fx-text-fill:BLUE; -fx-font-size: 20;"); //это скроллер
-//        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
-        scrollPane.getBottomBar().resize(10.0, 10.0);
-//        scrollPane.getTopBar().
+        scrollPane.setStyle("-fx-font-size: 20;");
         scrollPane.getMainHeader().setVisible(false);
-        scrollPane.getMainHeader().getNodeOrientation();
+//        scrollPane.getMainHeader().setStyle("-fx-background-color: #DFB951;");
+        scrollPane.getCondensedHeader().setVisible(false);
+//        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
+//        scrollPane.getMidBar().setVisible(false);
+//        scrollPane.getBottomBar().setVisible(false);
+
         imagePreview.setImage(null);
     }
 
@@ -192,7 +197,6 @@ public class ScreenshotController {
     @FXML
     JFXScrollPane scrollPane;
 
-
     private void contentGallery(ArrayList children){
 
 //        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
@@ -222,5 +226,23 @@ public class ScreenshotController {
 
     private void contentImagePreview(){
 
+    }
+
+    @FXML
+    public void writeToDB(){
+        Scanner in = new Scanner(System.in);
+        System.out.println("введи тестовые данные");
+        String urlid = in.nextLine();
+        String url = in.nextLine();
+        db.writeDB(urlid, url);
+        db.showDB();
+    }
+
+    @FXML
+    public void removeDB(){
+        Scanner in = new Scanner(System.in);
+        System.out.println("введи тестовые данные");
+        int number = in.nextInt();
+        db.removeDB(number);
     }
 }

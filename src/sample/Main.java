@@ -52,11 +52,17 @@ public class Main extends Application implements NativeKeyListener {
         System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
     }
 
+    public static DbHandler db;
+
     @Override
     public void init() {
         // Get the logger for "org.jnativehook" and set the level to off.
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
         logger.setLevel(Level.OFF);
+
+        db = new DbHandler();
+        db.onCreateDB();
+        db.createTable();
 
         // Change the level for all handlers attached to the default logger.
         Handler[] handlers = Logger.getLogger("").getHandlers();
