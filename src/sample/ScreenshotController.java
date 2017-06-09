@@ -1,9 +1,6 @@
 package sample;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXMasonryPane;
-import com.jfoenix.controls.JFXScrollPane;
-import com.jfoenix.controls.JFXToggleButton;
+import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -27,21 +24,19 @@ import java.util.logging.Logger;
 
 import static sample.Main.db;
 
-//import com.sun.javafx.geom.Rectangle;
-//import com.sun.javafx.tk.Toolkit;
-//import com.sun.glass.ui.Robot;
 
 public class ScreenshotController {
+    private static CloudHost cloudHost = new CloudHost();
+
 
     @FXML
     private JFXButton clickButton;
     @FXML
-    public ImageView imageView;
-
-//    public void initImageView(){
-//        System.out.println("init image view");
+    private ImageView imageView;
+    public void initImageView(){
+        System.out.println("init image view");
 //        imageView = new ImageView();
-//    }
+    }
     @FXML
     private JFXToggleButton chooseButton;
     @FXML
@@ -49,7 +44,7 @@ public class ScreenshotController {
     @FXML
     public void onMouseClicked(){
         System.out.println("on mouse clicked");
-        captureFullScreen(chooseButton.isSelected()); //chooseButton.isSelected());
+        captureFullScreen(chooseButton.isSelected());
 //        reloadImageView();
     }
     private Thread thread;
@@ -137,9 +132,10 @@ public class ScreenshotController {
         scrollPane.getCondensedHeader().setVisible(false);
 //        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
 //        scrollPane.getMidBar().setVisible(false);
-//        scrollPane.getBottomBar().setVisible(false);
 
         imagePreview.setImage(null);
+
+        spinner.setVisible(false);
     }
 
     static private int counter = 0;
@@ -177,10 +173,11 @@ public class ScreenshotController {
         Platform.runLater(() -> {
             imageView.setImage(image);
         });
-//        imageView.setImage(image);
+
     }
 
     private static Stage primaryStage;
+
     public void setPrimaryStage(Stage stage){
         this.primaryStage = stage;
     }
@@ -224,6 +221,56 @@ public class ScreenshotController {
         }
     }
 
+
+
+    @FXML
+    JFXSpinner spinner;
+
+    @FXML
+    JFXButton uploadButton;
+    static boolean isUploadEnabled = false;
+
+    public void onUploadClicked(){
+        if (imageView.getImage() != null) { // TODO change on canvas
+            if (isUploadEnabled) { // Cancel uploading ???
+                System.out.println("on mouse clicked upload cancel");
+
+                uploadButton.setCancelButton(false);
+                uploadButton.setText("Upload");
+                spinner.setVisible(false);
+                isUploadEnabled = false;
+            } else { // Uploading
+                System.out.println("on mouse clicked upload");
+                uploadButton.setCancelButton(true);
+                uploadButton.setText("Cancel");
+                isUploadEnabled = true;
+                spinner.setVisible(true);
+
+                // TODO add uploading from canvas
+                File fileImg = new File("screen_" + Integer.toString(counter) + ".png");
+                BufferedImage bImage = SwingFXUtils.fromFXImage(imageView.getImage(), null);
+                try {
+                    ImageIO.write(bImage, "png", fileImg);
+                    cloudHost.upload(fileImg);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    uploadButton.setCancelButton(false);
+                    uploadButton.setText("Upload");
+                    spinner.setVisible(false);
+                    isUploadEnabled = false;
+                }
+
+            System.out.println(cloudHost.getLastImageUrl());
+            System.out.println(cloudHost.getLastPublicId());
+            System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
+            }
+        } else {
+            System.out.println("oops, canvas is empty");
+            return;
+        }
+
+/////////////// DB ////////////////
     private void contentImagePreview(){
 
     }
@@ -244,5 +291,6 @@ public class ScreenshotController {
         System.out.println("введи тестовые данные");
         int number = in.nextInt();
         db.removeDB(number);
+
     }
 }

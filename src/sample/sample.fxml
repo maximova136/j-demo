@@ -39,6 +39,8 @@
                         </StackPane>
                      </children>
                   </StackPane>
+                  <JFXButton fx:id="uploadButton" layoutX="373.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" text="Upload" />
+                  <JFXSpinner fx:id="spinner" layoutX="442.0" layoutY="309.0" prefHeight="150.0" prefWidth="200.0" />
                </children>
             </AnchorPane>
         </content>
