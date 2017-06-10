@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -17,7 +18,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,6 +48,8 @@ public class ScreenshotController {
 //        reloadImageView();
     }
     private Thread thread;
+    private ArrayList<Node> children;
+
     @FXML
     public void onMouseClickedCanvas(){
         System.out.println("on mouse clicked Canvas");
@@ -117,13 +119,13 @@ public class ScreenshotController {
 ////            }
 //        });
 
-
+        ;
         //===========================================
         //=======Catalogue===========================
         //===========================================
 
-        ArrayList<Node> children = new ArrayList<>();
-        contentGallery(children);
+        children = new ArrayList<>();
+        contentGallery();
         masonryPane.getChildren().addAll(children);
 
         scrollPane.setStyle("-fx-font-size: 20;");
@@ -194,34 +196,32 @@ public class ScreenshotController {
     @FXML
     JFXScrollPane scrollPane;
 
-    private void contentGallery(ArrayList children){
+    private void contentGallery(){
+        children.clear();
+        System.out.println(children);
+        int counterDBSize = db.getSizeDB();
+        ArrayList<String> list = new ArrayList<>(db.showDB());
+        for (int i = 0; i < counterDBSize;i++) {
+            String public_id = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру
 
-//        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
-//        Image image2 = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
-//        ImageView testImageView1 = new ImageView();
-//        ImageView testImageView2 = new ImageView();
-//        testImageView1.setImage(image);
-//        testImageView1.setFitHeight(200);
-//        testImageView1.setFitWidth(200);
-//        testImageView2.setImage(image2);
-//        testImageView2.setFitHeight(200);
-//        testImageView2.setFitWidth(200);
-
-        Random r = new Random();
-        for (int i = 0; i < 30; i++) {
-            javafx.scene.control.Label label = new javafx.scene.control.Label();
-            label.setPrefSize(300, 200);
-            javafx.scene.control.Label label2 = new javafx.scene.control.Label();
-            label2.setPrefSize(300, 200);
-//            label.setGraphic(testImageView1);
-//            label2.setGraphic(testImageView2);
-            label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
+            Image image = new Image(public_id);
+            ImageView labelImageView = new ImageView();
+            labelImageView.setImage(image);
+            Label label = new Label();
+            label.setPrefSize(250, 200);
+            label.setGraphic(labelImageView);
             children.add(label);
-//        children.add(label2);
         }
+        System.out.println(children);
     }
 
+    private void reloadContentGallery(){
+        System.out.println("reload content Gallery");
+        Platform.runLater(() ->{
+            masonryPane.getChildren().addAll(children);
+        });
 
+    }
 
     @FXML
     JFXSpinner spinner;
@@ -282,8 +282,7 @@ public class ScreenshotController {
         Scanner in = new Scanner(System.in);
         System.out.println("введи тестовые данные");
         String urlid = in.nextLine();
-        String url = in.nextLine();
-        db.writeDB(urlid, url);
+        db.writeDB(urlid);
         db.showDB();
     }
 
@@ -292,7 +291,8 @@ public class ScreenshotController {
         Scanner in = new Scanner(System.in);
         System.out.println("введи тестовые данные");
         int number = in.nextInt();
-        db.removeDB(number);
-
+        db.removeDB(number);//изменить на удаление через urlid
+        contentGallery();
+//        reloadContentGallery();
     }
 }
