@@ -1,0 +1,83 @@
+package sample;
+import com.cloudinary.*;
+import com.cloudinary.utils.ObjectUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+
+/**
+ * Created by vmaksimo on 07.06.2017.
+ */
+public class CloudHost {
+    // size for gallery to fit in
+    private int WIDTH_SMALL = 250;
+    private int HEIGHT_SMALL = 200;
+    private String CROP_TYPE = "limit";
+
+    private Cloudinary cloudinary;
+
+    // do not change
+    CloudHost() {
+        Map params = ObjectUtils.asMap(
+                "cloud_name", "dira4xawu",
+                "api_key", "596983916447626",
+                "api_secret", "H-23JcrsPFmkwy7yWHoH2R8DmD8"
+        );
+        cloudinary = new Cloudinary(params);
+
+    }
+
+    static Map lastResult = null;
+    String last_public_id = null;
+
+    public void upload(File toUpload) throws IOException {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    lastResult = cloudinary.uploader().upload(toUpload, ObjectUtils.emptyMap());
+                    last_public_id = (String) lastResult.get("public_id");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.run();
+
+    }
+
+    public String getLastPublicId() {
+        return last_public_id;
+    }
+
+    String urlHead = "http://res.cloudinary.com/dira4xawu/image/upload";
+
+    public String getLastImageUrl() {
+        return urlHead + "/q_100/" + last_public_id;
+    }
+
+    public String getPreviewImageUrl(String public_id) {
+        return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_SMALL + ",h_" + HEIGHT_SMALL + "/" + public_id;
+    }
+
+    public String getLastPreviewImageUrl() {
+        return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_SMALL + ",h_" + HEIGHT_SMALL + "/" + last_public_id;
+    }
+
+    // TODO test
+    public void deleteImage(String public_id) {
+        try {
+//            cloudinary.uploader().destroy(public_id, ObjectUtils.emptyMap());
+            cloudinary.api().deleteResources(Arrays.asList(public_id), ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO add "can not delete image" message
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

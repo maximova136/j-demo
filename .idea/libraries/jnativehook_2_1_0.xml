@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="jfoenix">
+  <library name="jnativehook-2.1.0">
     <CLASSES>
-      <root url="jar://C:/Java-libs/jfoenix.jar!/" />
+      <root url="jar://C:/Java-libs/jnativehook-2.1.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
