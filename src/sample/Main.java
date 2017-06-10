@@ -38,7 +38,8 @@ public class Main extends Application implements NativeKeyListener {
 //        sc.captureFullScreen(true);
         if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
             Platform.runLater( () -> {
-                sc.captureFullScreen(true);
+//                sc.captureFullScreen(true);
+                captureWindowController.prepareForCapture();
             });
         }
 
@@ -84,33 +85,48 @@ public class Main extends Application implements NativeKeyListener {
 
     private static ScreenshotController sc = new ScreenshotController();
 
+    public static Stage stage;
+    public static CaptureWindowController captureWindowController;
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        // root Node - корневой узел
-        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
-        Parent root = loader.load();
+    public void start(Stage primaryStage) { //throws Exception {
+        try {
+            stage = primaryStage;
+            // root Node - корневой узел
+            // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+            Parent root = loader.load();
 
-        sc.setPrimaryStage(primaryStage);
+            // capture window controller
+            FXMLLoader loaderCWC = new FXMLLoader(getClass().getResource("captureWindow.fxml"));
+            loaderCWC.load();
+            captureWindowController = loaderCWC.getController();
+
+            sc.setPrimaryStage(primaryStage);
 //        sc.initImageView();
-        loader.setController(sc);
+            loader.setController(sc);
 
-        primaryStage.setTitle("Hello World");
+            primaryStage.setTitle("Hello World");
 
 //        primaryStage.setIconified(false);
-        primaryStage.iconifiedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                System.out.println("minimized: " + newValue.booleanValue());
-            }
-            
+            primaryStage.iconifiedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    System.out.println("minimized: " + newValue.booleanValue());
+                }
 
-        });
 
-        // scene - сцена, stage - подмостки
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+            });
 
+            // scene - сцена, stage - подмостки
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+//            this.stop();
+            System.exit(1);
+        }
     }
 
     @Override

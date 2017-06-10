@@ -3,6 +3,8 @@ package sample;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -44,7 +46,9 @@ public class ScreenshotController {
     @FXML
     public void onMouseClicked(){
         System.out.println("on mouse clicked");
-        captureFullScreen(chooseButton.isSelected());
+//        captureFullScreen(chooseButton.isSelected());
+        Main.captureWindowController.prepareForCapture();
+
 //        reloadImageView();
     }
     private Thread thread;
@@ -180,6 +184,9 @@ public class ScreenshotController {
 
     public void setPrimaryStage(Stage stage){
         this.primaryStage = stage;
+    }
+    public static Stage getPrimaryStage(){
+        return primaryStage;
     }
 
 
