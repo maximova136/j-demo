@@ -230,7 +230,7 @@ public class ScreenshotController {
     JFXButton uploadButton;
     static boolean isUploadEnabled = false;
 
-    public void onUploadClicked(){
+    public void onUploadClicked() {
         if (imageView.getImage() != null) { // TODO change on canvas
             if (isUploadEnabled) { // Cancel uploading ???
                 System.out.println("on mouse clicked upload cancel");
@@ -247,6 +247,7 @@ public class ScreenshotController {
                 spinner.setVisible(true);
 
                 // TODO add uploading from canvas
+                // TODO in separate thread
                 File fileImg = new File("screen_" + Integer.toString(counter) + ".png");
                 BufferedImage bImage = SwingFXUtils.fromFXImage(imageView.getImage(), null);
                 try {
@@ -261,14 +262,15 @@ public class ScreenshotController {
                     isUploadEnabled = false;
                 }
 
-            System.out.println(cloudHost.getLastImageUrl());
-            System.out.println(cloudHost.getLastPublicId());
-            System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
+                System.out.println(cloudHost.getLastImageUrl());
+                System.out.println(cloudHost.getLastPublicId());
+                System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
             }
         } else {
             System.out.println("oops, canvas is empty");
             return;
         }
+    }
 
 /////////////// DB ////////////////
     private void contentImagePreview(){

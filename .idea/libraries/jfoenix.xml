@@ -1,12 +1,9 @@
 <component name="libraryTable">
   <library name="jfoenix">
     <CLASSES>
-      <root url="jar://C:/Program Files/Java/jfoenix.jar!/" />
-      <root url="jar://C:/Program Files/Java/jnativehook-2.1.0.jar!/" />
+      <root url="jar://C:/Java-libs/jfoenix.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://C:/Program Files/Java/jfoenix.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>
