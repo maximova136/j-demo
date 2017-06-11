@@ -115,13 +115,13 @@ public class DbHandler {
         return counter;
     }
 
-    public void removeDB(int number){
+    public void removeDB(String publicId){
         try {
             Class.forName("org.sqlite.JDBC") ;
             conn = DriverManager.getConnection("jdbc:sqlite:DataBase.db") ;
             conn.setAutoCommit(false) ;
             stmt = conn.createStatement() ;
-            String sql = "DELETE from IMAGE where ID="+ number + ";";
+            String sql = "DELETE from IMAGE where URLID='"+ publicId + "';";
             stmt.executeUpdate(sql) ;
             conn.commit() ;
             stmt.close() ;

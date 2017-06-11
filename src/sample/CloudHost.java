@@ -63,9 +63,12 @@ public class CloudHost {
     public String getPreviewImageUrl(String public_id) {
         return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_SMALL + ",h_" + HEIGHT_SMALL + "/" + public_id;
     }
-
     public String getLastPreviewImageUrl() {
         return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_SMALL + ",h_" + HEIGHT_SMALL + "/" + last_public_id;
+    }
+
+    public static String getPublicID(String url) {
+        return url.substring(url.lastIndexOf('/')+1);
     }
 
     // TODO test

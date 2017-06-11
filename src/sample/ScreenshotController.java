@@ -3,6 +3,7 @@ package sample;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -10,6 +11,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -126,7 +128,8 @@ public class ScreenshotController {
 
         children = new ArrayList<>();
         contentGallery();
-        masonryPane.getChildren().addAll(children);
+        reloadContentGallery();
+//        masonryPane.getChildren().addAll(children);
 
         scrollPane.setStyle("-fx-font-size: 20;");
         scrollPane.getMainHeader().setVisible(false);
@@ -135,8 +138,9 @@ public class ScreenshotController {
 //        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
 //        scrollPane.getMidBar().setVisible(false);
 
-        imagePreview.setImage(null);
+        previewImageUrl = null;
 
+        imagePreview.setImage(null);
         spinner.setVisible(false);
     }
 
@@ -198,18 +202,26 @@ public class ScreenshotController {
 
     private void contentGallery(){
         children.clear();
-        System.out.println(children);
+//        System.out.println(children);
         int counterDBSize = db.getSizeDB();
         ArrayList<String> list = new ArrayList<>(db.showDB());
         for (int i = 0; i < counterDBSize;i++) {
-            String public_id = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру
+            String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру
 
-            Image image = new Image(public_id);
+            Image image = new Image(previewImgUrl);
             ImageView labelImageView = new ImageView();
             labelImageView.setImage(image);
             Label label = new Label();
             label.setPrefSize(250, 200);
             label.setGraphic(labelImageView);
+//            label.setId(previewImgUrl);
+            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    contentImagePreview(previewImgUrl);
+                }
+            });
+
             children.add(label);
         }
         System.out.println(children);
@@ -218,9 +230,21 @@ public class ScreenshotController {
     private void reloadContentGallery(){
         System.out.println("reload content Gallery");
         Platform.runLater(() ->{
+            masonryPane.getChildren().clear();
             masonryPane.getChildren().addAll(children);
         });
+    }
 
+    String previewImageUrl;
+
+    private void contentImagePreview(String previewImgUrl){
+        //TODO сделать превью другого размера
+        Image image = new Image(previewImgUrl);
+        Platform.runLater(() -> {
+            imagePreview.setImage(image);
+            previewImageUrl = previewImgUrl;
+        });
+        System.out.println("public_id:" + CloudHost.getPublicID(previewImgUrl));
     }
 
     @FXML
@@ -273,10 +297,8 @@ public class ScreenshotController {
     }
 
 /////////////// DB ////////////////
-    private void contentImagePreview(){
 
-    }
-
+    // тестовый метод, должен  быть изменён на добавление картинок с принстскрина
     @FXML
     public void writeToDB(){
         Scanner in = new Scanner(System.in);
@@ -284,15 +306,14 @@ public class ScreenshotController {
         String urlid = in.nextLine();
         db.writeDB(urlid);
         db.showDB();
+        contentGallery();
+        reloadContentGallery();
     }
 
     @FXML
-    public void removeDB(){
-        Scanner in = new Scanner(System.in);
-        System.out.println("введи тестовые данные");
-        int number = in.nextInt();
-        db.removeDB(number);//изменить на удаление через urlid
+    public void removeImage(){
+        db.removeDB(CloudHost.getPublicID(previewImageUrl));
         contentGallery();
-//        reloadContentGallery();
+        reloadContentGallery();
     }
 }

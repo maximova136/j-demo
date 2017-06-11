@@ -53,7 +53,7 @@
                       <children>
                           <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" fx:id="imagePreview" />
                           <JFXButton prefHeight="25.0" prefWidth="180.0" text="Add entry to DB" onMouseClicked="#writeToDB"/>
-                          <JFXButton prefHeight="25.0" prefWidth="180.0" text="Remove entry" onMouseClicked="#removeDB"/>
+                          <JFXButton prefHeight="25.0" prefWidth="180.0" text="Remove Image" onMouseClicked="#removeImage"/>
                       </children>
                   </VBox>
                    <JFXScrollPane fx:id="scrollPane" >
