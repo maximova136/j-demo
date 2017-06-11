@@ -14,6 +14,9 @@ public class CloudHost {
     // size for gallery to fit in
     private int WIDTH_SMALL = 250;
     private int HEIGHT_SMALL = 200;
+
+    private int WIDTH_MIDDLE = 400;
+    private int HEIGHT_MIDDLE = 300;
     private String CROP_TYPE = "limit";
 
     private Cloudinary cloudinary;
@@ -64,8 +67,16 @@ public class CloudHost {
         return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_SMALL + ",h_" + HEIGHT_SMALL + "/" + public_id;
     }
 
+    public String getPreviewMiddleImageUrl (String public_id){
+        return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_MIDDLE + ",h_" + HEIGHT_MIDDLE + "/" + public_id;
+    }
+
     public String getLastPreviewImageUrl() {
         return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_SMALL + ",h_" + HEIGHT_SMALL + "/" + last_public_id;
+    }
+
+    public static String getPublicID(String url) {
+        return url.substring(url.lastIndexOf('/')+1);
     }
 
     // TODO test

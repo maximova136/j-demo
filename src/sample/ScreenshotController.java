@@ -3,12 +3,17 @@ package sample;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -17,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +31,6 @@ import static sample.Main.db;
 
 public class ScreenshotController {
     private static CloudHost cloudHost = new CloudHost();
-
 
     @FXML
     private JFXButton clickButton;
@@ -48,6 +51,8 @@ public class ScreenshotController {
 //        reloadImageView();
     }
     private Thread thread;
+    private ArrayList<Node> children;
+
     @FXML
     public void onMouseClickedCanvas(){
         System.out.println("on mouse clicked Canvas");
@@ -117,14 +122,15 @@ public class ScreenshotController {
 ////            }
 //        });
 
-
+        ;
         //===========================================
         //=======Catalogue===========================
         //===========================================
 
-        ArrayList<Node> children = new ArrayList<>();
-        contentGallery(children);
-        masonryPane.getChildren().addAll(children);
+        children = new ArrayList<>();
+        contentGallery();
+        reloadContentGallery();
+//        masonryPane.getChildren().addAll(children);
 
         scrollPane.setStyle("-fx-font-size: 20;");
         scrollPane.getMainHeader().setVisible(false);
@@ -133,9 +139,12 @@ public class ScreenshotController {
 //        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
 //        scrollPane.getMidBar().setVisible(false);
 
-        imagePreview.setImage(null);
+        previewImageUrl = null;
 
+        imagePreview.setImage(null);
         spinner.setVisible(false);
+
+        vBox.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.3)); //чтобы не ползал разделитель экранов
     }
 
     static private int counter = 0;
@@ -193,35 +202,57 @@ public class ScreenshotController {
     ImageView imagePreview;
     @FXML
     JFXScrollPane scrollPane;
+    @FXML
+    SplitPane splitPane;
+    @FXML
+    VBox vBox;
 
-    private void contentGallery(ArrayList children){
+    private void contentGallery(){
+        children.clear();
+//        System.out.println(children);
+        int counterDBSize = db.getSizeDB();
+        ArrayList<String> list = new ArrayList<>(db.showDB());
+        for (int i = 0; i < counterDBSize;i++) {
+            String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру для галереи
+            String previewUrlToImageView = cloudHost.getPreviewMiddleImageUrl(list.get(i)); //ссылка для превью миниатюры
+            Image image = new Image(previewImgUrl);
+            ImageView labelImageView = new ImageView();
+            labelImageView.setImage(image);
+            Label label = new Label();
+            label.setPrefSize(250, 200);
+            label.setGraphic(labelImageView);
+//            label.setId(previewImgUrl);
+            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+//                    contentImagePreview(previewImgUrl);
+                    contentImagePreview(previewUrlToImageView);
+                }
+            });
 
-//        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
-//        Image image2 = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
-//        ImageView testImageView1 = new ImageView();
-//        ImageView testImageView2 = new ImageView();
-//        testImageView1.setImage(image);
-//        testImageView1.setFitHeight(200);
-//        testImageView1.setFitWidth(200);
-//        testImageView2.setImage(image2);
-//        testImageView2.setFitHeight(200);
-//        testImageView2.setFitWidth(200);
-
-        Random r = new Random();
-        for (int i = 0; i < 30; i++) {
-            javafx.scene.control.Label label = new javafx.scene.control.Label();
-            label.setPrefSize(300, 200);
-            javafx.scene.control.Label label2 = new javafx.scene.control.Label();
-            label2.setPrefSize(300, 200);
-//            label.setGraphic(testImageView1);
-//            label2.setGraphic(testImageView2);
-            label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
             children.add(label);
-//        children.add(label2);
         }
+        System.out.println(children);
     }
 
+    private void reloadContentGallery(){
+//        System.out.println("reload content Gallery");
+        Platform.runLater(() ->{
+            masonryPane.getChildren().clear();
+            masonryPane.getChildren().addAll(children);
+        });
+    }
 
+    String previewImageUrl;
+
+    private void contentImagePreview(String previewImgUrl){
+        Image image = new Image(previewImgUrl);
+        Platform.runLater(() -> {
+            imagePreview.setImage(image);
+            previewImageUrl = previewImgUrl;
+        });
+//        System.out.println("public_id:" + CloudHost.getPublicID(previewImgUrl));
+    }
 
     @FXML
     JFXSpinner spinner;
@@ -273,26 +304,34 @@ public class ScreenshotController {
     }
 
 /////////////// DB ////////////////
-    private void contentImagePreview(){
 
-    }
-
+    //TODO добавить запись в бд при создании новой картинки (получить ключ на новую картинку и вставить её в следующий метод
+//    @FXML
+//    public void writeToDB(String public_id){
     @FXML
     public void writeToDB(){
+
         Scanner in = new Scanner(System.in);
         System.out.println("введи тестовые данные");
-        String urlid = in.nextLine();
-        String url = in.nextLine();
-        db.writeDB(urlid, url);
+        String public_id = in.nextLine();
+
+
+        db.writeDB(public_id);
         db.showDB();
+        contentGallery();
+        reloadContentGallery();
     }
 
     @FXML
-    public void removeDB(){
-        Scanner in = new Scanner(System.in);
-        System.out.println("введи тестовые данные");
-        int number = in.nextInt();
-        db.removeDB(number);
-
+    public void removeImage(){
+        //TODO добавить удаление с сервера.
+        db.removeDB(CloudHost.getPublicID(previewImageUrl));
+//        cloudHost.deleteImage(CloudHost.getPublicID(previewImageUrl)); //удаление с сервера
+        contentGallery();
+        reloadContentGallery();
+        Platform.runLater(() -> {
+            imagePreview.setImage(null);
+            previewImageUrl = null;
+        });
     }
 }
