@@ -4,10 +4,12 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -32,21 +34,18 @@ public class Main extends Application implements NativeKeyListener {
             }
         }
     }
+
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
         System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
-//        sc.captureFullScreen(true);
         if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
-            Platform.runLater( () -> {
-                sc.captureFullScreen(true);
+            Platform.runLater(() -> {
+                captureWindowController.prepareForCapture();
+                System.out.println("prepared for capture");
             });
         }
-
-//        Platform.runLater( () -> {
-//            sc.reloadImageView();
-//        });
-
     }
+
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
         System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
@@ -79,38 +78,61 @@ public class Main extends Application implements NativeKeyListener {
             System.exit(1);
         }
         GlobalScreen.addNativeKeyListener(new Main());
-//        sc.initImageView();
     }
 
     private static ScreenshotController sc = new ScreenshotController();
 
+    public static Stage stage;
+    public static CaptureWindowController captureWindowController;
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        // root Node - корневой узел
-        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
-        Parent root = loader.load();
+    public void start(Stage primaryStage) { //throws Exception {
+        try {
+            stage = primaryStage;
+            // root Node - корневой узел
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+            Parent root = loader.load();
 
-        sc.setPrimaryStage(primaryStage);
-//        sc.initImageView();
-        loader.setController(sc);
+            // capture window controller
+            FXMLLoader loaderCWC = new FXMLLoader(getClass().getResource("captureWindow.fxml"));
+            loaderCWC.load();
+            captureWindowController = loaderCWC.getController();
 
-        primaryStage.setTitle("Hello World");
+            captureWindowController.setOnHiding(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    System.out.println("HIDING REQUEST");
+                    sc.updatePic();
+                }
+            });
 
-//        primaryStage.setIconified(false);
-        primaryStage.iconifiedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                System.out.println("minimized: " + newValue.booleanValue());
-            }
-            
+            // TODO remove if isn't needed
+            primaryStage.setOnShown(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    System.out.println("SHOWN primary stage");
+                }
+            });
+            sc.setPrimaryStage(primaryStage);
+            loader.setController(sc);
 
-        });
+            primaryStage.setTitle("Screenshot Tool");
 
-        // scene - сцена, stage - подмостки
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+            primaryStage.iconifiedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    System.out.println("minimized: " + newValue.booleanValue());
+                }
+            });
 
+            // scene - сцена, stage - подмостки
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     @Override

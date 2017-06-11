@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import com.jfoenix.controls.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXMasonryPane?>
+<?import com.jfoenix.controls.JFXScrollPane?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="300.0" minWidth="500.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
+<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="500.0" minWidth="800.0" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
    <tabs>
       <Tab text="Editor">
         <content>
@@ -19,44 +26,35 @@
                         <Font size="26.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fx:id="imageView" fitHeight="253.0" fitWidth="334.0" layoutX="224.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imageView" fitHeight="217.0" fitWidth="162.0" layoutX="169.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
                   <JFXToggleButton fx:id="chooseButton" layoutX="55.0" layoutY="101.0" mnemonicParsing="false" prefHeight="114.0" prefWidth="140.0" selected="true" text="Hide app" wrapText="true">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </JFXToggleButton>
-                  <JFXButton fx:id="ButtonCanvas" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="14.0" layoutY="196.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedCanvas" prefHeight="25.0" prefWidth="152.0" ripplerFill="#9d83e5" text="Image" textOverrun="LEADING_ELLIPSIS" wrapText="true">
-                     <font>
-                        <Font size="26.0" />
-                     </font>
-                  </JFXButton>
-                  <StackPane layoutX="100.0" layoutY="300.0" prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <StackPane prefHeight="150.0" prefWidth="200.0">
-                           <children>
-                              <Canvas fx:id="canvas" height="151.0" width="200.0" />
-                           </children>
-                        </StackPane>
-                     </children>
-                  </StackPane>
-                  <JFXButton fx:id="uploadButton" layoutX="373.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" text="Upload" />
-                  <JFXSpinner fx:id="spinner" layoutX="442.0" layoutY="309.0" prefHeight="150.0" prefWidth="200.0" />
+                  <ScrollPane fx:id="scrollPaneCanvas" layoutX="286.0" layoutY="15.0" prefHeight="332.0" prefWidth="400.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="15.0">
+                     <content>
+                        <Canvas fx:id="canvas" height="313.0" width="397.0" AnchorPane.bottomAnchor="98.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0" />
+                     </content>
+                  </ScrollPane>
+                  <JFXSpinner fx:id="spinner" layoutX="122.0" layoutY="309.0" prefHeight="150.0" prefWidth="200.0" />
+                  <JFXButton fx:id="uploadButton" layoutX="73.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" text="Upload" />
                </children>
             </AnchorPane>
         </content>
       </Tab>
       <Tab text="Catalogue">
          <content>
-            <SplitPane dividerPositions="0.3">
+            <SplitPane fx:id="splitPane" dividerPositions="0.3">
                <items>
-                  <VBox>
+                  <VBox fx:id="vBox">
                       <children>
-                          <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" fx:id="imagePreview" />
-                          <JFXButton prefHeight="25.0" prefWidth="180.0" text="Add entry to DB" onMouseClicked="#writeToDB"/>
-                          <JFXButton prefHeight="25.0" prefWidth="180.0" text="Remove entry" onMouseClicked="#removeDB"/>
+                          <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
+                          <JFXButton onMouseClicked="#writeToDB" prefHeight="25.0" prefWidth="180.0" text="Add entry to DB" />
+                          <JFXButton onMouseClicked="#removeImage" prefHeight="25.0" prefWidth="180.0" text="Remove Image" />
                       </children>
                   </VBox>
-                   <JFXScrollPane fx:id="scrollPane" >
+                   <JFXScrollPane fx:id="scrollPane">
                        <content>
                            <JFXMasonryPane fx:id="masonryPane">
                            </JFXMasonryPane>
