@@ -78,7 +78,7 @@ public class CaptureWindowController extends Stage {
             yFrom = (int) m.getScreenY();
         });
 
-        mainCanvas.setOnMouseDragged(m -> {
+            mainCanvas.setOnMouseDragged(m -> {
             xNow = (int) m.getScreenX();
             yNow = (int) m.getScreenY();
             repaintCanvas();
@@ -135,6 +135,9 @@ public class CaptureWindowController extends Stage {
                                 image = new Robot().createScreenCapture(new Rectangle(rect[0], rect[1], rect[2], rect[3]));
                             } catch (AWTException ex) {
                                 Logger.getLogger(getClass().getName()).log(Level.INFO, null, ex);
+                                return;
+                            } catch (IllegalArgumentException ex2){
+                                Logger.getLogger(getClass().getName()).log(Level.INFO, null, ex2);
                                 return;
                             }
                             System.out.println("Starting Service");
@@ -249,8 +252,8 @@ public class CaptureWindowController extends Stage {
 
         private void done() {
             System.out.println("done service: " + getValue());
-            Main.stage.show();
             close();
+            Main.stage.show();
 
             if (getValue())
                 System.out.println("Successfull Capturing, image is saved at:" + filePath);

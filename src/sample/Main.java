@@ -34,23 +34,18 @@ public class Main extends Application implements NativeKeyListener {
             }
         }
     }
+
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
         System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
-//        sc.captureFullScreen(true);
         if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
-            Platform.runLater( () -> {
-//                sc.captureFullScreen(true);
+            Platform.runLater(() -> {
                 captureWindowController.prepareForCapture();
                 System.out.println("prepared for capture");
             });
         }
-
-//        Platform.runLater( () -> {
-//            sc.reloadImageView();
-//        });
-
     }
+
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
         System.out.println("Key Typed: " + e.getKeyText(e.getKeyCode()));
@@ -83,19 +78,18 @@ public class Main extends Application implements NativeKeyListener {
             System.exit(1);
         }
         GlobalScreen.addNativeKeyListener(new Main());
-//        sc.initImageView();
     }
 
     private static ScreenshotController sc = new ScreenshotController();
 
     public static Stage stage;
     public static CaptureWindowController captureWindowController;
+
     @Override
     public void start(Stage primaryStage) { //throws Exception {
         try {
             stage = primaryStage;
             // root Node - корневой узел
-            // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
             Parent root = loader.load();
 
@@ -112,30 +106,31 @@ public class Main extends Application implements NativeKeyListener {
                 }
             });
 
+            // TODO remove if isn't needed
+            primaryStage.setOnShown(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    System.out.println("SHOWN primary stage");
+                }
+            });
             sc.setPrimaryStage(primaryStage);
-//        sc.initImageView();
             loader.setController(sc);
 
-            primaryStage.setTitle("Hello World");
+            primaryStage.setTitle("Screenshot Tool");
 
-//        primaryStage.setIconified(false);
             primaryStage.iconifiedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     System.out.println("minimized: " + newValue.booleanValue());
                 }
-
-
             });
 
             // scene - сцена, stage - подмостки
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
-//            this.stop();
             System.exit(1);
         }
     }

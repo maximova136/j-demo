@@ -12,11 +12,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
 
 import javax.imageio.ImageIO;
+import javax.management.Notification;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -49,26 +52,37 @@ public class ScreenshotController {
     @FXML
     private ScrollPane scrollPaneCanvas;
 
-    public void updatePic(){
-        Platform.runLater(()->{
-            gc.clearRect(0,0,canvasWidth, canvasHeight);
+    public void updatePic() {
+        Platform.runLater(() -> {
+            gc.clearRect(0, 0, canvasWidth, canvasHeight);
             Image image = new Image("file:screenshot.png");
             gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight());
+            canvasWidth = (int) image.getWidth();
+            canvasHeight = (int) image.getHeight();
         });
         primaryStage.setIconified(false);
     }
 
     @FXML
-    public void onMouseClicked(){
+    public void onMouseClicked() {
         System.out.println("on mouse clicked");
         Main.captureWindowController.prepareForCapture();
     }
+
     private Thread thread;
 
     public static int screenWidth = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
     public static int screenHeight = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     public static int canvasWidth;
     public static int canvasHeight;
+
+    public void setCanvasSize(int width, int height) {
+        canvasWidth = width;
+        canvasHeight = height;
+        Platform.runLater(() -> {
+            scrollPaneCanvas.setContent(canvas);
+        });
+    }
 
     public void initialize() {
         thread = new Thread(new ChildrenThread(this));
@@ -77,15 +91,16 @@ public class ScreenshotController {
 
         canvas.setHeight(screenHeight);
         canvas.setWidth(screenWidth);
-        canvasHeight = screenHeight;
-        canvasWidth = screenWidth;
+
+        canvasHeight = 0;
+        canvasWidth = 0;
 
         gc = canvas.getGraphicsContext2D();
 
         scrollPaneCanvas.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPaneCanvas.setPannable(true);
         scrollPaneCanvas.setContent(canvas);
-
+//        scrollPaneCanvas.setContent(null);
 
         ////       ____
         ////      /----\
@@ -172,7 +187,7 @@ public class ScreenshotController {
             primaryStage.setIconified(false);
             thread.start();
             reloadImageView();
-        } catch (java.awt.AWTException ex ){
+        } catch (java.awt.AWTException ex) {
             Logger.getLogger(ScreenshotController.class.getName()).log(Level.ALL, null, ex);
         } catch (IOException e) {
             e.printStackTrace();
@@ -191,7 +206,7 @@ public class ScreenshotController {
 
     private static Stage primaryStage;
 
-    public void setPrimaryStage(Stage stage){
+    public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
     }
 
@@ -203,7 +218,7 @@ public class ScreenshotController {
     static boolean isUploadEnabled = false;
 
     public void onUploadClicked() {
-        if (imageView.getImage() != null) { // TODO change on canvas
+        if (canvas.getScene() != null) { // TODO change on canvas
             if (isUploadEnabled) { // Cancel uploading ???
                 System.out.println("on mouse clicked upload cancel");
 
@@ -218,25 +233,30 @@ public class ScreenshotController {
                 isUploadEnabled = true;
                 spinner.setVisible(true);
 
-                // TODO add uploading from canvas
-                // TODO in separate thread
-                File fileImg = new File("screen_" + Integer.toString(counter) + ".png");
-                BufferedImage bImage = SwingFXUtils.fromFXImage(imageView.getImage(), null);
                 try {
-                    ImageIO.write(bImage, "png", fileImg);
-                    cloudHost.upload(fileImg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    WritableImage wim = new WritableImage(canvasWidth, canvasHeight);
+                    canvas.snapshot(null, wim);
+                    File file = new File("screenshot.png");
+                    ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
+                    // TODO in separate thread
+                    cloudHost.upload(file);
+
+                    System.out.println(cloudHost.getLastImageUrl());
+                    System.out.println(cloudHost.getLastPublicId());
+                    System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IllegalArgumentException iae) {
+                    // TODO change Notifications to JFXSnackbar
+                    // Image dimensions must be positive (w,h > 0)
+                    System.out.println("No image to upload");
+                    Notifications.create().title("Notification").text("No image to upload").showError();
                 } finally {
                     uploadButton.setCancelButton(false);
                     uploadButton.setText("Upload");
                     spinner.setVisible(false);
                     isUploadEnabled = false;
                 }
-
-                System.out.println(cloudHost.getLastImageUrl());
-                System.out.println(cloudHost.getLastPublicId());
-                System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
             }
         } else {
             System.out.println("oops, canvas is empty");
@@ -256,7 +276,7 @@ public class ScreenshotController {
     @FXML
     JFXScrollPane scrollPane;
 
-    private void contentGallery(ArrayList children){
+    private void contentGallery(ArrayList children) {
 
 //        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
 //        Image image2 = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
@@ -277,20 +297,20 @@ public class ScreenshotController {
             label2.setPrefSize(300, 200);
 //            label.setGraphic(testImageView1);
 //            label2.setGraphic(testImageView2);
-            label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
+            label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + "," + r.nextInt(200) + "," + r.nextInt(200) + ");");
             children.add(label);
 //        children.add(label2);
         }
     }
 
 
-/////////////// DB ////////////////
-    private void contentImagePreview(){
+    /////////////// DB ////////////////
+    private void contentImagePreview() {
 
     }
 
     @FXML
-    public void writeToDB(){
+    public void writeToDB() {
         Scanner in = new Scanner(System.in);
         System.out.println("введи тестовые данные");
         String urlid = in.nextLine();
@@ -300,7 +320,7 @@ public class ScreenshotController {
     }
 
     @FXML
-    public void removeDB(){
+    public void removeDB() {
         Scanner in = new Scanner(System.in);
         System.out.println("введи тестовые данные");
         int number = in.nextInt();
