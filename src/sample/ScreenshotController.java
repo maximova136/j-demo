@@ -3,8 +3,6 @@ package sample;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -14,16 +12,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
 
 import javax.imageio.ImageIO;
-import javax.management.Notification;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -215,48 +210,49 @@ public class ScreenshotController {
 
     @FXML
     JFXButton uploadButton;
-    static boolean isUploadEnabled = false;
+
+    // true - busy, false - clickable
+    private void setOnUploading(boolean isBusy) {
+        uploadButton.setDisable(isBusy);
+        spinner.setVisible(isBusy);
+    }
 
     public void onUploadClicked() {
-        if (canvas.getScene() != null) { // TODO change on canvas
-            if (isUploadEnabled) { // Cancel uploading ???
-                System.out.println("on mouse clicked upload cancel");
+        if (canvas.getScene() != null) {
+            System.out.println("on mouse clicked upload");
+            try {
+                WritableImage wim = new WritableImage(canvasWidth, canvasHeight);
+                canvas.snapshot(null, wim);
+                File file = new File("screenshot.png");
+                ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
+                // TODO in separate thread
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            Platform.runLater(() -> {
+                                setOnUploading(true);
+                            });
+                            cloudHost.upload(file);
+                            System.out.println(cloudHost.getLastImageUrl());
+                            System.out.println(cloudHost.getLastPublicId());
+                            System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
+                            Platform.runLater(() -> {
+                                setOnUploading(false);
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
 
-                uploadButton.setCancelButton(false);
-                uploadButton.setText("Upload");
-                spinner.setVisible(false);
-                isUploadEnabled = false;
-            } else { // Uploading
-                System.out.println("on mouse clicked upload");
-                uploadButton.setCancelButton(true);
-                uploadButton.setText("Cancel");
-                isUploadEnabled = true;
-                spinner.setVisible(true);
-
-                try {
-                    WritableImage wim = new WritableImage(canvasWidth, canvasHeight);
-                    canvas.snapshot(null, wim);
-                    File file = new File("screenshot.png");
-                    ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
-                    // TODO in separate thread
-                    cloudHost.upload(file);
-
-                    System.out.println(cloudHost.getLastImageUrl());
-                    System.out.println(cloudHost.getLastPublicId());
-                    System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (IllegalArgumentException iae) {
-                    // TODO change Notifications to JFXSnackbar
-                    // Image dimensions must be positive (w,h > 0)
-                    System.out.println("No image to upload");
-                    Notifications.create().title("Notification").text("No image to upload").showError();
-                } finally {
-                    uploadButton.setCancelButton(false);
-                    uploadButton.setText("Upload");
-                    spinner.setVisible(false);
-                    isUploadEnabled = false;
-                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (IllegalArgumentException iae) {
+                // TODO change Notifications to JFXSnackbar
+                // Image dimensions must be positive (w,h > 0)
+                System.out.println("No image to upload");
+                Notifications.create().title("Notification").text("No image to upload").showError();
             }
         } else {
             System.out.println("oops, canvas is empty");

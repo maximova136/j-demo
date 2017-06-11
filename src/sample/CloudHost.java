@@ -2,9 +2,11 @@ package sample;
 
 import com.cloudinary.*;
 import com.cloudinary.utils.ObjectUtils;
+import org.controlsfx.control.Notifications;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -41,8 +43,8 @@ public class CloudHost {
                 try {
                     lastResult = cloudinary.uploader().upload(toUpload, ObjectUtils.emptyMap());
                     last_public_id = (String) lastResult.get("public_id");
-
                 } catch (IOException e) {
+                    Notifications.create().title("Error").text("Network is unreachable").showError();
                     e.printStackTrace();
                 }
             }
