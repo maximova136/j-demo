@@ -9,9 +9,11 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -29,7 +31,6 @@ import static sample.Main.db;
 
 public class ScreenshotController {
     private static CloudHost cloudHost = new CloudHost();
-
 
     @FXML
     private JFXButton clickButton;
@@ -142,6 +143,8 @@ public class ScreenshotController {
 
         imagePreview.setImage(null);
         spinner.setVisible(false);
+
+        vBox.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.3)); //чтобы не ползал разделитель экранов
     }
 
     static private int counter = 0;
@@ -199,6 +202,10 @@ public class ScreenshotController {
     ImageView imagePreview;
     @FXML
     JFXScrollPane scrollPane;
+    @FXML
+    SplitPane splitPane;
+    @FXML
+    VBox vBox;
 
     private void contentGallery(){
         children.clear();
@@ -206,8 +213,8 @@ public class ScreenshotController {
         int counterDBSize = db.getSizeDB();
         ArrayList<String> list = new ArrayList<>(db.showDB());
         for (int i = 0; i < counterDBSize;i++) {
-            String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру
-
+            String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру для галереи
+            String previewUrlToImageView = cloudHost.getPreviewMiddleImageUrl(list.get(i)); //ссылка для превью миниатюры
             Image image = new Image(previewImgUrl);
             ImageView labelImageView = new ImageView();
             labelImageView.setImage(image);
@@ -218,7 +225,8 @@ public class ScreenshotController {
             label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    contentImagePreview(previewImgUrl);
+//                    contentImagePreview(previewImgUrl);
+                    contentImagePreview(previewUrlToImageView);
                 }
             });
 
@@ -228,7 +236,7 @@ public class ScreenshotController {
     }
 
     private void reloadContentGallery(){
-        System.out.println("reload content Gallery");
+//        System.out.println("reload content Gallery");
         Platform.runLater(() ->{
             masonryPane.getChildren().clear();
             masonryPane.getChildren().addAll(children);
@@ -238,13 +246,12 @@ public class ScreenshotController {
     String previewImageUrl;
 
     private void contentImagePreview(String previewImgUrl){
-        //TODO сделать превью другого размера
         Image image = new Image(previewImgUrl);
         Platform.runLater(() -> {
             imagePreview.setImage(image);
             previewImageUrl = previewImgUrl;
         });
-        System.out.println("public_id:" + CloudHost.getPublicID(previewImgUrl));
+//        System.out.println("public_id:" + CloudHost.getPublicID(previewImgUrl));
     }
 
     @FXML
@@ -298,13 +305,18 @@ public class ScreenshotController {
 
 /////////////// DB ////////////////
 
-    // тестовый метод, должен  быть изменён на добавление картинок с принстскрина
+    //TODO добавить запись в бд при создании новой картинки (получить ключ на новую картинку и вставить её в следующий метод
+//    @FXML
+//    public void writeToDB(String public_id){
     @FXML
     public void writeToDB(){
+
         Scanner in = new Scanner(System.in);
         System.out.println("введи тестовые данные");
-        String urlid = in.nextLine();
-        db.writeDB(urlid);
+        String public_id = in.nextLine();
+
+
+        db.writeDB(public_id);
         db.showDB();
         contentGallery();
         reloadContentGallery();
@@ -312,8 +324,14 @@ public class ScreenshotController {
 
     @FXML
     public void removeImage(){
+        //TODO добавить удаление с сервера.
         db.removeDB(CloudHost.getPublicID(previewImageUrl));
+//        cloudHost.deleteImage(CloudHost.getPublicID(previewImageUrl)); //удаление с сервера
         contentGallery();
         reloadContentGallery();
+        Platform.runLater(() -> {
+            imagePreview.setImage(null);
+            previewImageUrl = null;
+        });
     }
 }
