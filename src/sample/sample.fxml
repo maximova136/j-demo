@@ -12,7 +12,6 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -27,36 +26,19 @@
                         <Font size="26.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fx:id="imageView" fitHeight="217.0" fitWidth="162.0" layoutX="224.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imageView" fitHeight="217.0" fitWidth="162.0" layoutX="169.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" />
                   <JFXToggleButton fx:id="chooseButton" layoutX="55.0" layoutY="101.0" mnemonicParsing="false" prefHeight="114.0" prefWidth="140.0" selected="true" text="Hide app" wrapText="true">
                      <font>
                         <Font size="17.0" />
                      </font>
                   </JFXToggleButton>
-                  <JFXButton fx:id="ButtonCanvas" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="14.0" layoutY="196.0" mnemonicParsing="false" onMouseClicked="#onMouseClickedCanvas" prefHeight="25.0" prefWidth="152.0" ripplerFill="#9d83e5" text="Image" textOverrun="LEADING_ELLIPSIS" wrapText="true">
-                     <font>
-                        <Font size="26.0" />
-                     </font>
-                  </JFXButton>
-                  <StackPane layoutX="100.0" layoutY="300.0" prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <StackPane prefHeight="150.0" prefWidth="200.0">
-                           <children>
-                              <Canvas fx:id="some_canvas" height="151.0" width="200.0" />
-                           </children>
-                        </StackPane>
-                     </children>
-                  </StackPane>
-                  <JFXButton fx:id="uploadButton" layoutX="373.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" text="Upload" />
-                  <JFXSpinner fx:id="spinner" layoutX="442.0" layoutY="309.0" prefHeight="150.0" prefWidth="200.0" />
-                  <ScrollPane fx:id="scrollPaneCanvas" layoutX="442.0" layoutY="58.0" prefHeight="200.0" prefWidth="200.0">
+                  <ScrollPane fx:id="scrollPaneCanvas" layoutX="286.0" layoutY="15.0" prefHeight="332.0" prefWidth="400.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="15.0">
                      <content>
-                      <AnchorPane fx:id="anchorPaneCanvas" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Canvas fx:id="canvas" height="200.0" width="200.0" />
-                           </children></AnchorPane>
+                        <Canvas fx:id="canvas" height="313.0" width="397.0" AnchorPane.bottomAnchor="98.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0" />
                      </content>
                   </ScrollPane>
+                  <JFXSpinner fx:id="spinner" layoutX="122.0" layoutY="309.0" prefHeight="150.0" prefWidth="200.0" />
+                  <JFXButton fx:id="uploadButton" layoutX="73.0" layoutY="309.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" text="Upload" />
                </children>
             </AnchorPane>
         </content>

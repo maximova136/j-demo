@@ -4,10 +4,12 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -40,10 +42,9 @@ public class Main extends Application implements NativeKeyListener {
             Platform.runLater( () -> {
 //                sc.captureFullScreen(true);
                 captureWindowController.prepareForCapture();
-                System.out.println("captured or not");
+                System.out.println("prepared for capture");
             });
         }
-        sc.updatePic();
 
 //        Platform.runLater( () -> {
 //            sc.reloadImageView();
@@ -102,6 +103,14 @@ public class Main extends Application implements NativeKeyListener {
             FXMLLoader loaderCWC = new FXMLLoader(getClass().getResource("captureWindow.fxml"));
             loaderCWC.load();
             captureWindowController = loaderCWC.getController();
+
+            captureWindowController.setOnHiding(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    System.out.println("HIDING REQUEST");
+                    sc.updatePic();
+                }
+            });
 
             sc.setPrimaryStage(primaryStage);
 //        sc.initImageView();

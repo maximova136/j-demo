@@ -13,12 +13,14 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -36,14 +38,9 @@ public class ScreenshotController {
     private JFXButton clickButton;
     @FXML
     private ImageView imageView;
-    public void initImageView(){
-        System.out.println("init image view");
-//        imageView = new ImageView();
-    }
     @FXML
     private JFXToggleButton chooseButton;
-    @FXML
-    private Canvas some_canvas;
+    private static GraphicsContext gc;
 
     @FXML
     private Canvas canvas;
@@ -53,47 +50,42 @@ public class ScreenshotController {
     private ScrollPane scrollPaneCanvas;
 
     public void updatePic(){
-//        if (canvas != null) {
         Platform.runLater(()->{
-//            canvas.getGraphicsContext2D().drawImage(new Image(cloudHost.getImageUrl("v1nspq7zmp95beqvajtb")),0,0);
-
+            gc.clearRect(0,0,canvasWidth, canvasHeight);
+            Image image = new Image("file:screenshot.png");
+            gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight());
         });
-//        }
+        primaryStage.setIconified(false);
     }
 
     @FXML
     public void onMouseClicked(){
         System.out.println("on mouse clicked");
-//        captureFullScreen(chooseButton.isSelected());
         Main.captureWindowController.prepareForCapture();
-
-//        reloadImageView();
     }
     private Thread thread;
-    @FXML
-    public void onMouseClickedCanvas(){
-        System.out.println("on mouse clicked some_canvas");
-        GraphicsContext g = some_canvas.getGraphicsContext2D();
-        Image backImage = new Image("http://animal-store.ru/img/2015/050219/2042896");
-        double widthImage  = backImage.getWidth();
-        double heightImage = backImage.getHeight();
-        g.drawImage(backImage, 0, 0, widthImage, heightImage); // arg: X, Y, Width, Height
-    }
+
+    public static int screenWidth = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+    public static int screenHeight = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+    public static int canvasWidth;
+    public static int canvasHeight;
 
     public void initialize() {
         thread = new Thread(new ChildrenThread(this));
         System.out.println("initialize");
         imageView.setMouseTransparent(true);
-        GraphicsContext g = some_canvas.getGraphicsContext2D();
 
-        canvas.setHeight(500);
-        canvas.setWidth(200);
-        // Get screen dimensions and set the canvas accordingly
-//        Dimension screenSize = getScreenSize();
-//        double screenWidth = screenSize.getWidth();
-//        double screenHeight = screenSize.getHeight();
-        some_canvas.setHeight(screenHeight/1.5);
-        some_canvas.setWidth(screenWidth/1.5);
+        canvas.setHeight(screenHeight);
+        canvas.setWidth(screenWidth);
+        canvasHeight = screenHeight;
+        canvasWidth = screenWidth;
+
+        gc = canvas.getGraphicsContext2D();
+
+        scrollPaneCanvas.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPaneCanvas.setPannable(true);
+        scrollPaneCanvas.setContent(canvas);
+
 
         ////       ____
         ////      /----\
@@ -162,8 +154,6 @@ public class ScreenshotController {
     }
 
     static private int counter = 0;
-    public static int screenWidth = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-    public static int screenHeight = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
     public static BufferedImage screenCapture;
 
@@ -204,50 +194,6 @@ public class ScreenshotController {
     public void setPrimaryStage(Stage stage){
         this.primaryStage = stage;
     }
-    public static Stage getPrimaryStage(){
-        return primaryStage;
-    }
-
-
-    //===========================================
-    //=======Catalogue===========================
-    //===========================================
-
-    @FXML
-    JFXMasonryPane masonryPane;
-    @FXML
-    ImageView imagePreview;
-    @FXML
-    JFXScrollPane scrollPane;
-
-    private void contentGallery(ArrayList children){
-
-//        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
-//        Image image2 = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
-//        ImageView testImageView1 = new ImageView();
-//        ImageView testImageView2 = new ImageView();
-//        testImageView1.setImage(image);
-//        testImageView1.setFitHeight(200);
-//        testImageView1.setFitWidth(200);
-//        testImageView2.setImage(image2);
-//        testImageView2.setFitHeight(200);
-//        testImageView2.setFitWidth(200);
-
-        Random r = new Random();
-        for (int i = 0; i < 30; i++) {
-            javafx.scene.control.Label label = new javafx.scene.control.Label();
-            label.setPrefSize(300, 200);
-            javafx.scene.control.Label label2 = new javafx.scene.control.Label();
-            label2.setPrefSize(300, 200);
-//            label.setGraphic(testImageView1);
-//            label2.setGraphic(testImageView2);
-            label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
-            children.add(label);
-//        children.add(label2);
-        }
-    }
-
-
 
     @FXML
     JFXSpinner spinner;
@@ -297,6 +243,46 @@ public class ScreenshotController {
             return;
         }
     }
+
+
+    //===========================================
+    //=======Catalogue===========================
+    //===========================================
+
+    @FXML
+    JFXMasonryPane masonryPane;
+    @FXML
+    ImageView imagePreview;
+    @FXML
+    JFXScrollPane scrollPane;
+
+    private void contentGallery(ArrayList children){
+
+//        Image image = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
+//        Image image2 = new Image("http://333v.ru/uploads/0a/0aa6cf3843b1cffc6c570812b8b304aa.jpg");
+//        ImageView testImageView1 = new ImageView();
+//        ImageView testImageView2 = new ImageView();
+//        testImageView1.setImage(image);
+//        testImageView1.setFitHeight(200);
+//        testImageView1.setFitWidth(200);
+//        testImageView2.setImage(image2);
+//        testImageView2.setFitHeight(200);
+//        testImageView2.setFitWidth(200);
+
+        Random r = new Random();
+        for (int i = 0; i < 30; i++) {
+            javafx.scene.control.Label label = new javafx.scene.control.Label();
+            label.setPrefSize(300, 200);
+            javafx.scene.control.Label label2 = new javafx.scene.control.Label();
+            label2.setPrefSize(300, 200);
+//            label.setGraphic(testImageView1);
+//            label2.setGraphic(testImageView2);
+            label.setStyle("-fx-background-color:rgb(" + r.nextInt(200) + ","+ r.nextInt(200) + ","+ r.nextInt(200) + ");");
+            children.add(label);
+//        children.add(label2);
+        }
+    }
+
 
 /////////////// DB ////////////////
     private void contentImagePreview(){
