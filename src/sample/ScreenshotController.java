@@ -9,12 +9,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,24 @@ public class ScreenshotController {
     @FXML
     private JFXToggleButton chooseButton;
     @FXML
+    private Canvas some_canvas;
+
+    @FXML
     private Canvas canvas;
+    @FXML
+    private AnchorPane anchorPaneCanvas;
+    @FXML
+    private ScrollPane scrollPaneCanvas;
+
+    public void updatePic(){
+//        if (canvas != null) {
+        Platform.runLater(()->{
+//            canvas.getGraphicsContext2D().drawImage(new Image(cloudHost.getImageUrl("v1nspq7zmp95beqvajtb")),0,0);
+
+        });
+//        }
+    }
+
     @FXML
     public void onMouseClicked(){
         System.out.println("on mouse clicked");
@@ -54,8 +72,8 @@ public class ScreenshotController {
     private Thread thread;
     @FXML
     public void onMouseClickedCanvas(){
-        System.out.println("on mouse clicked Canvas");
-        GraphicsContext g = canvas.getGraphicsContext2D();
+        System.out.println("on mouse clicked some_canvas");
+        GraphicsContext g = some_canvas.getGraphicsContext2D();
         Image backImage = new Image("http://animal-store.ru/img/2015/050219/2042896");
         double widthImage  = backImage.getWidth();
         double heightImage = backImage.getHeight();
@@ -65,16 +83,17 @@ public class ScreenshotController {
     public void initialize() {
         thread = new Thread(new ChildrenThread(this));
         System.out.println("initialize");
-        //imageView = new ImageView();//new Image("https://pp.userapi.com/c630529/v630529928/52669/3BsceoPMCHM.jpg"));
         imageView.setMouseTransparent(true);
-        GraphicsContext g = canvas.getGraphicsContext2D();
+        GraphicsContext g = some_canvas.getGraphicsContext2D();
 
+        canvas.setHeight(500);
+        canvas.setWidth(200);
         // Get screen dimensions and set the canvas accordingly
 //        Dimension screenSize = getScreenSize();
 //        double screenWidth = screenSize.getWidth();
 //        double screenHeight = screenSize.getHeight();
-        canvas.setHeight(screenHeight/1.5);
-        canvas.setWidth(screenWidth/1.5);
+        some_canvas.setHeight(screenHeight/1.5);
+        some_canvas.setWidth(screenWidth/1.5);
 
         ////       ____
         ////      /----\
@@ -86,7 +105,7 @@ public class ScreenshotController {
         ////    |    |   |
         ////     \___|__/
 
-//        canvas.setOnMouseDragged(e -> {
+//        some_canvas.setOnMouseDragged(e -> {
 ////            double size = Double.parseDouble(brushSize.getText());
 ////            double x = e.getX() - size / 2;
 ////            double y = e.getY() - size / 2;
@@ -104,7 +123,7 @@ public class ScreenshotController {
 ////            }
 //        });
 //
-//        canvas.setOnMouseClicked(e -> {
+//        some_canvas.setOnMouseClicked(e -> {
 ////            double size = Double.parseDouble(brushSize.getText());
 ////            double x = e.getX() - size / 2;
 ////            double y = e.getY() - size / 2;
@@ -155,15 +174,15 @@ public class ScreenshotController {
             if (isHideEnabled) {
                 primaryStage.setIconified(true);
             }
-            Robot robot = new Robot();
+            java.awt.Robot robot = new java.awt.Robot();
             robot.delay(500);
-            screenCapture = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+            screenCapture = robot.createScreenCapture(new java.awt.Rectangle(java.awt.Toolkit.getDefaultToolkit().getScreenSize()));
             ImageIO.write(screenCapture, "png", new File("screen_" + Integer.toString(counter) + ".png"));
             counter++;
             primaryStage.setIconified(false);
             thread.start();
             reloadImageView();
-        } catch (AWTException ex ){
+        } catch (java.awt.AWTException ex ){
             Logger.getLogger(ScreenshotController.class.getName()).log(Level.ALL, null, ex);
         } catch (IOException e) {
             e.printStackTrace();

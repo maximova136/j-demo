@@ -40,8 +40,10 @@ public class Main extends Application implements NativeKeyListener {
             Platform.runLater( () -> {
 //                sc.captureFullScreen(true);
                 captureWindowController.prepareForCapture();
+                System.out.println("captured or not");
             });
         }
+        sc.updatePic();
 
 //        Platform.runLater( () -> {
 //            sc.reloadImageView();

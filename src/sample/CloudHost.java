@@ -60,6 +60,10 @@ public class CloudHost {
         return urlHead + "/q_100/" + last_public_id;
     }
 
+    public String getImageUrl(String public_id) {
+        return urlHead + "/q100/" + public_id;
+    }
+
     public String getPreviewImageUrl(String public_id) {
         return urlHead + "/c_" + CROP_TYPE + ",w_" + WIDTH_SMALL + ",h_" + HEIGHT_SMALL + "/" + public_id;
     }

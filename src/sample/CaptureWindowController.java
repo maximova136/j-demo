@@ -34,9 +34,9 @@ import javax.imageio.ImageIO;
  */
 public class CaptureWindowController extends Stage {
     // Service
-//    final CaptureService captureService = new CaptureService();
-    CaptureService captureService = new CaptureService();
-    Thread capturingThread;
+    final CaptureService captureService = new CaptureService();
+//    CaptureService captureService = new CaptureService();
+    public Thread capturingThread;
     @FXML
     private StackPane stackPane;
     @FXML
@@ -93,26 +93,18 @@ public class CaptureWindowController extends Stage {
             if (key.getCode() == KeyCode.A && key.isControlDown())
                 selectWholeScreen();
 
-            if (key.getCode() == KeyCode.ESCAPE || key.getCode() == KeyCode.BACK_SPACE) {
+            if (key.getCode() == KeyCode.BACK_SPACE || key.getCode() == KeyCode.Q) {
                 if (capturingThread != null) {
                     System.out.println("capturing thread not null, interrupting");
                     capturingThread.interrupt();
                     System.out.println(capturingThread.getState().toString());
                 } else {
                     System.out.println("capturing thread null");
-//                    System.out.println(capturingThread.getState().toString());
                 }
-                System.out.println(captureService.getState());
-                captureService.reset();
-
-                // should be closed but i fucked it
-                // TODO fix return to JNativeHook thread after ESCAPE pressed
-//                doNotCreateImage();
-
-//                Platform.runLater(() -> {
+//                System.out.println(captureService.getState());
+//                captureService.reset();
                 Main.stage.show();
                 close();
-//                });
 
             } else if (key.getCode() == KeyCode.ENTER || key.getCode() == KeyCode.SPACE) {
                 createImage();
@@ -120,35 +112,6 @@ public class CaptureWindowController extends Stage {
         });
     }
 
-
-    public void doNotCreateImage() {
-        System.out.println("do not create Image");
-        // return if it's alive
-        if ((capturingThread != null && capturingThread.isAlive()) || captureService.isRunning()) {
-            System.out.println("return");
-            return;
-        }
-
-        capturingThread = new Thread(() -> {
-            boolean interrupted = false;
-            // !interrupted?
-            if (!Thread.interrupted()) {
-                Platform.runLater(() -> {
-                            // Clear the canvas
-                            gc.clearRect(0, 0, getWidth(), getHeight());
-
-                            BufferedImage image = null;
-                            int[] rect = getRectangleBounds();
-                            System.out.println("Starting Service");
-                            captureService.startService(image);
-                        }
-                );
-            } // !interrupted?
-        });
-
-        capturingThread.setDaemon(true);
-        capturingThread.start();
-    }
 
     public void createImage() {
         System.out.println("create Image");
@@ -315,7 +278,7 @@ public class CaptureWindowController extends Stage {
             close();
             System.out.println("Error, failed to capture screen");
             Notifications.create().title("Error").text("Failed to capture the Screen!").showError();
-            reset();
+//            reset();
         }
 
         @Override
