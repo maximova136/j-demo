@@ -5,19 +5,21 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
 
@@ -156,14 +158,13 @@ public class ScreenshotController {
         children = new ArrayList<>();
         contentGallery();
         reloadContentGallery();
-//        masonryPane.getChildren().addAll(children);
+
+//        masonryPane.setStyle("-fx-border-color: black");
+
 
         scrollPane.setStyle("-fx-font-size: 20;");
         scrollPane.getMainHeader().setVisible(false);
-//        scrollPane.getMainHeader().setStyle("-fx-background-color: #DFB951;");
         scrollPane.getCondensedHeader().setVisible(false);
-//        scrollPane.getBottomBar().getChildren().add(new javafx.scene.control.Label("Title"));
-//        scrollPane.getMidBar().setVisible(false);
 
         previewImageUrl = null;
 
@@ -247,6 +248,7 @@ public class ScreenshotController {
                             System.out.println(cloudHost.getLastImageUrl());
                             System.out.println(cloudHost.getLastPublicId());
                             System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
+                            writeToDB(cloudHost.getLastPublicId());
                             Platform.runLater(() -> {
                                 setOnUploading(false);
                             });
@@ -285,6 +287,8 @@ public class ScreenshotController {
     SplitPane splitPane;
     @FXML
     VBox vBox;
+    @FXML
+    SVGPath svg1,svg2,svg3;
 
     private void contentGallery(){
         children.clear();
@@ -298,13 +302,15 @@ public class ScreenshotController {
             ImageView labelImageView = new ImageView();
             labelImageView.setImage(image);
             Label label = new Label();
-            label.setPrefSize(250, 200);
+//            label.maxHeight(200);
+//            label.maxWidth(250);
+//            label.setStyle("-fx-background-color: black");
+////            label.setPrefSize(250, 200);
+//            label.setStyle("-fx-border-color: black");
             label.setGraphic(labelImageView);
-//            label.setId(previewImgUrl);
             label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-//                    contentImagePreview(previewImgUrl);
                     contentImagePreview(previewUrlToImageView);
                 }
             });
@@ -330,21 +336,11 @@ public class ScreenshotController {
             imagePreview.setImage(image);
             previewImageUrl = previewImgUrl;
         });
-//        System.out.println("public_id:" + CloudHost.getPublicID(previewImgUrl));
     }
     /////////////// DB ////////////////
 
-    //TODO добавить запись в бд при создании новой картинки (получить ключ на новую картинку и вставить её в следующий метод
-//    @FXML
-//    public void writeToDB(String public_id){
     @FXML
-    public void writeToDB(){
-
-        Scanner in = new Scanner(System.in);
-        System.out.println("введи тестовые данные");
-        String public_id = in.nextLine();
-
-
+    public void writeToDB(String public_id){
         db.writeDB(public_id);
         db.showDB();
         contentGallery();
@@ -353,9 +349,8 @@ public class ScreenshotController {
 
     @FXML
     public void removeImage(){
-        //TODO добавить удаление с сервера.
         db.removeDB(CloudHost.getPublicID(previewImageUrl));
-//        cloudHost.deleteImage(CloudHost.getPublicID(previewImageUrl)); //удаление с сервера
+        cloudHost.deleteImage(CloudHost.getPublicID(previewImageUrl)); //удаление с сервера
         contentGallery();
         reloadContentGallery();
         Platform.runLater(() -> {
