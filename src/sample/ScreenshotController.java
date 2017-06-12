@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -13,7 +12,6 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -21,11 +19,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Stage;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
 import javax.imageio.ImageIO;
@@ -57,9 +55,11 @@ public class ScreenshotController {
     private ScrollPane scrollPaneCanvas;
 
     public void updatePic() {
+
         Platform.runLater(() -> {
             gc.clearRect(0, 0, canvasWidth, canvasHeight);
             Image image = new Image("file:screenshot.png");
+            imageOld = image;
             gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight());
             canvasWidth = (int) image.getWidth();
             canvasHeight = (int) image.getHeight();
@@ -73,7 +73,6 @@ public class ScreenshotController {
         Main.captureWindowController.prepareForCapture();
     }
 
-    private Thread thread;
     private ArrayList<Node> children;
 
 
@@ -91,16 +90,23 @@ public class ScreenshotController {
     }
 
     public void initialize() {
-        thread = new Thread(new ChildrenThread(this));
+
         System.out.println("initialize");
 
         canvas.setHeight(screenHeight);
         canvas.setWidth(screenWidth);
 
-        canvasHeight = 0;
-        canvasWidth = 0;
+        // TODO change if image without screenshot should not be saved and uploaded
+        canvasHeight = screenHeight;
+        canvasWidth = screenWidth;
 
         gc = canvas.getGraphicsContext2D();
+        final Pen penTool = new Pen(gc);
+        final Eraser eraserTool = new Eraser(gc);
+        penTool.setColor(colorPicker.getValue());
+        gc.setLineJoin(StrokeLineJoin.ROUND);
+        gc.setLineCap(StrokeLineCap.ROUND);
+
 
         scrollPaneCanvas.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 //        scrollPaneCanvas.setPannable(true);
@@ -116,13 +122,20 @@ public class ScreenshotController {
             @Override
             public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
                 System.out.println("new value:" + newValue.getText());
+                if (newValue.getText().equalsIgnoreCase("pen")) {
+                    currentTool = penTool;
+                } else if (newValue.getText().equalsIgnoreCase("eraser")){
+                    eraserTool.setImage(imageOld);
+                    currentTool = eraserTool;
+                }
             }
         });
+        chooseToolBox.valueProperty().setValue(new Label("Pen"));
 
         gcCircle = sizeCircleCanvas.getGraphicsContext2D();
-        gc.setFill(Color.WHITE);
+        gcCircle.setFill(Color.WHITE);
         // start value is 10, white color
-        gc.fillOval(10,10,10,10); // TODO it working
+        gcCircle.fillOval(10, 10, 10, 10); // TODO it working
 
         sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -130,46 +143,36 @@ public class ScreenshotController {
                 gcCircle.clearRect(0, 0, 30, 30);
                 gcCircle.setFill(colorPicker.getValue());
                 gcCircle.fillOval(15 - newValue.doubleValue() / 2, 15 - newValue.doubleValue() / 2, newValue.doubleValue(), newValue.doubleValue());
+
+                currentTool.setSize(newValue.doubleValue());
             }
         });
 
+        colorPicker.valueProperty().addListener(new ChangeListener<Color>() {
+            @Override
+            public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
+                gcCircle.clearRect(0, 0, 30, 30);
+                gcCircle.setFill(newValue);
+                gcCircle.fillOval(15 - sizeSlider.getValue() / 2, 15 - sizeSlider.getValue() / 2, sizeSlider.getValue(),sizeSlider.getValue());
+
+                currentTool.setColor(newValue);
+            }
+        });
 
         canvas.setOnMouseDragged(e -> {
-            System.out.println("mouse dragged");
-//            double size = Double.parseDouble(brushSize.getText());
-//            double x = e.getX() - size / 2;
-//            double y = e.getY() - size / 2;
-//
-//            if (eraser.isSelected()) {
-//                g.clearRect(x, y, size, size);
-//            } else {
-//
-//                g.setFill(colorPicker.getValue());
-//                if (isBrushBrush) {
-//                    g.fillOval(x, y, size, size);
-//                } else {
-//                    g.fillRect(x, y, size, size);
-//                }
-//            }
+            if (currentTool != null) {
+                currentTool.onDrag(e);
+            }
         });
-        canvas.setDisable(true);
-        canvas.setOnMouseClicked(e -> {
-            System.out.println("mouse clicked");
-
-            double size = sizeSlider.getValue();
-            double x = e.getX() - size / 2;
-            double y = e.getY() - size / 2;
-
-//            if (eraser.isSelected()) {
-//                g.clearRect(x, y, size, size);
-//            } else {
-//                g.setFill(colorPicker.getValue());
-//                if(isBrushBrush) {
-//                    g.fillOval(x, y, size, size);
-//                } else {
-//                    g.fillRect(x, y, size, size);
-//                }
-//            }
+        canvas.setOnMousePressed(e -> {
+            if (currentTool != null) {
+                currentTool.onPress(e);
+            }
+        });
+        canvas.setOnMouseReleased(e -> {
+            if (currentTool != null) {
+                currentTool.onRelease(e);
+            }
         });
 
         ////       ____
@@ -206,42 +209,6 @@ public class ScreenshotController {
         vBox.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.3)); //чтобы не ползал разделитель экранов
     }
 
-    static private int counter = 0;
-
-    public static BufferedImage screenCapture;
-
-    public void captureFullScreen(boolean isHideEnabled) {
-        try {
-            System.out.println("capture full screen");
-
-            if (isHideEnabled) {
-                primaryStage.setIconified(true);
-            }
-            java.awt.Robot robot = new java.awt.Robot();
-            robot.delay(500);
-            screenCapture = robot.createScreenCapture(new java.awt.Rectangle(java.awt.Toolkit.getDefaultToolkit().getScreenSize()));
-            ImageIO.write(screenCapture, "png", new File("screen_" + Integer.toString(counter) + ".png"));
-            counter++;
-            primaryStage.setIconified(false);
-            thread.start();
-            reloadImageView();
-        } catch (java.awt.AWTException ex) {
-            Logger.getLogger(ScreenshotController.class.getName()).log(Level.ALL, null, ex);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void reloadImageView() {
-        System.out.println("========================");
-        System.out.println("reload image view");
-        Image image = SwingFXUtils.toFXImage(screenCapture, null);
-        Platform.runLater(() -> {
-//            imageView.setImage(image);
-        });
-
-    }
-
     private static Stage primaryStage;
 
     public void setPrimaryStage(Stage stage) {
@@ -271,7 +238,6 @@ public class ScreenshotController {
 //                canvas.snapshot(null, wim);
                 File file = new File("screenshot.png");
                 ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
-                // TODO in separate thread
                 new Thread() {
                     @Override
                     public void run() {
@@ -317,7 +283,9 @@ public class ScreenshotController {
     Canvas sizeCircleCanvas;
     GraphicsContext gcCircle;
     @FXML
-    JFXComboBox <Label> chooseToolBox;
+    JFXComboBox<Label> chooseToolBox;
+    static Image imageOld;
+    private Tool currentTool = null;
 
 
     //===========================================
@@ -335,12 +303,12 @@ public class ScreenshotController {
     @FXML
     VBox vBox;
 
-    private void contentGallery(){
+    private void contentGallery() {
         children.clear();
 //        System.out.println(children);
         int counterDBSize = db.getSizeDB();
         ArrayList<String> list = new ArrayList<>(db.showDB());
-        for (int i = 0; i < counterDBSize;i++) {
+        for (int i = 0; i < counterDBSize; i++) {
             String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру для галереи
             String previewUrlToImageView = cloudHost.getPreviewMiddleImageUrl(list.get(i)); //ссылка для превью миниатюры
             Image image = new Image(previewImgUrl);
@@ -363,9 +331,9 @@ public class ScreenshotController {
         System.out.println(children);
     }
 
-    private void reloadContentGallery(){
+    private void reloadContentGallery() {
 //        System.out.println("reload content Gallery");
-        Platform.runLater(() ->{
+        Platform.runLater(() -> {
             masonryPane.getChildren().clear();
             masonryPane.getChildren().addAll(children);
         });
@@ -373,7 +341,7 @@ public class ScreenshotController {
 
     String previewImageUrl;
 
-    private void contentImagePreview(String previewImgUrl){
+    private void contentImagePreview(String previewImgUrl) {
         Image image = new Image(previewImgUrl);
         Platform.runLater(() -> {
             imagePreview.setImage(image);
@@ -387,7 +355,7 @@ public class ScreenshotController {
 //    @FXML
 //    public void writeToDB(String public_id){
     @FXML
-    public void writeToDB(){
+    public void writeToDB() {
 
         Scanner in = new Scanner(System.in);
         System.out.println("введи тестовые данные");
@@ -401,7 +369,7 @@ public class ScreenshotController {
     }
 
     @FXML
-    public void removeImage(){
+    public void removeImage() {
         //TODO добавить удаление с сервера.
         db.removeDB(CloudHost.getPublicID(previewImageUrl));
 //        cloudHost.deleteImage(CloudHost.getPublicID(previewImageUrl)); //удаление с сервера

@@ -190,7 +190,6 @@ public class CaptureWindowController extends Stage {
         gc.setFill(Color.rgb(0, 0, 0, 0.5)); // полупрозрачный черный
 
         // действия для таблички с надписью
-        double middle = UPPER_LEFT_X + frameWidth / 2;
         int sizeLabelWidth = 70;
         int sizeLabelHeight = 20;
         gc.fillRect(UPPER_LEFT_X, UPPER_LEFT_Y < sizeLabelHeight ? UPPER_LEFT_Y : UPPER_LEFT_Y - sizeLabelHeight, sizeLabelWidth, sizeLabelHeight);
