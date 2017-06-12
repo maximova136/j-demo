@@ -2,23 +2,30 @@ package sample;
 
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.controlsfx.control.Notifications;
 
 import javax.imageio.ImageIO;
@@ -38,8 +45,6 @@ public class ScreenshotController {
 
     @FXML
     private JFXButton clickButton;
-    @FXML
-    private ImageView imageView;
     @FXML
     private JFXToggleButton chooseButton;
     private static GraphicsContext gc;
@@ -88,7 +93,6 @@ public class ScreenshotController {
     public void initialize() {
         thread = new Thread(new ChildrenThread(this));
         System.out.println("initialize");
-        imageView.setMouseTransparent(true);
 
         canvas.setHeight(screenHeight);
         canvas.setWidth(screenWidth);
@@ -99,9 +103,74 @@ public class ScreenshotController {
         gc = canvas.getGraphicsContext2D();
 
         scrollPaneCanvas.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPaneCanvas.setPannable(true);
+//        scrollPaneCanvas.setPannable(true);
         scrollPaneCanvas.setContent(canvas);
 //        scrollPaneCanvas.setContent(null);
+
+        //==== editor =====
+        chooseToolBox.getItems().add(new Label("Pen"));
+        chooseToolBox.getItems().add(new Label("Eraser"));
+        chooseToolBox.setPromptText("select tool");
+
+        chooseToolBox.valueProperty().addListener(new ChangeListener<Label>() {
+            @Override
+            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
+                System.out.println("new value:" + newValue.getText());
+            }
+        });
+
+        gcCircle = sizeCircleCanvas.getGraphicsContext2D();
+        gc.setFill(Color.WHITE);
+        // start value is 10, white color
+        gc.fillOval(10,10,10,10); // TODO it working
+
+        sizeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                gcCircle.clearRect(0, 0, 30, 30);
+                gcCircle.setFill(colorPicker.getValue());
+                gcCircle.fillOval(15 - newValue.doubleValue() / 2, 15 - newValue.doubleValue() / 2, newValue.doubleValue(), newValue.doubleValue());
+            }
+        });
+
+
+        canvas.setOnMouseDragged(e -> {
+            System.out.println("mouse dragged");
+//            double size = Double.parseDouble(brushSize.getText());
+//            double x = e.getX() - size / 2;
+//            double y = e.getY() - size / 2;
+//
+//            if (eraser.isSelected()) {
+//                g.clearRect(x, y, size, size);
+//            } else {
+//
+//                g.setFill(colorPicker.getValue());
+//                if (isBrushBrush) {
+//                    g.fillOval(x, y, size, size);
+//                } else {
+//                    g.fillRect(x, y, size, size);
+//                }
+//            }
+        });
+        canvas.setDisable(true);
+        canvas.setOnMouseClicked(e -> {
+            System.out.println("mouse clicked");
+
+            double size = sizeSlider.getValue();
+            double x = e.getX() - size / 2;
+            double y = e.getY() - size / 2;
+
+//            if (eraser.isSelected()) {
+//                g.clearRect(x, y, size, size);
+//            } else {
+//                g.setFill(colorPicker.getValue());
+//                if(isBrushBrush) {
+//                    g.fillOval(x, y, size, size);
+//                } else {
+//                    g.fillRect(x, y, size, size);
+//                }
+//            }
+        });
 
         ////       ____
         ////      /----\
@@ -112,42 +181,6 @@ public class ScreenshotController {
         ////     /   |  \
         ////    |    |   |
         ////     \___|__/
-
-//        some_canvas.setOnMouseDragged(e -> {
-////            double size = Double.parseDouble(brushSize.getText());
-////            double x = e.getX() - size / 2;
-////            double y = e.getY() - size / 2;
-////
-////            if (eraser.isSelected()) {
-////                g.clearRect(x, y, size, size);
-////            } else {
-////
-////                g.setFill(colorPicker.getValue());
-////                if (isBrushBrush) {
-////                    g.fillOval(x, y, size, size);
-////                } else {
-////                    g.fillRect(x, y, size, size);
-////                }
-////            }
-//        });
-//
-//        some_canvas.setOnMouseClicked(e -> {
-////            double size = Double.parseDouble(brushSize.getText());
-////            double x = e.getX() - size / 2;
-////            double y = e.getY() - size / 2;
-////
-////            if (eraser.isSelected()) {
-////                g.clearRect(x, y, size, size);
-////            } else {
-////                g.setFill(colorPicker.getValue());
-////                if(isBrushBrush) {
-////                    g.fillOval(x, y, size, size);
-////                } else {
-////                    g.fillRect(x, y, size, size);
-////                }
-////            }
-//        });
-
         ;
         //===========================================
         //=======Catalogue===========================
@@ -204,7 +237,7 @@ public class ScreenshotController {
         System.out.println("reload image view");
         Image image = SwingFXUtils.toFXImage(screenCapture, null);
         Platform.runLater(() -> {
-            imageView.setImage(image);
+//            imageView.setImage(image);
         });
 
     }
@@ -232,7 +265,10 @@ public class ScreenshotController {
             System.out.println("on mouse clicked upload");
             try {
                 WritableImage wim = new WritableImage(canvasWidth, canvasHeight);
-                canvas.snapshot(null, wim);
+                SnapshotParameters params = new SnapshotParameters();
+                params.setFill(Color.TRANSPARENT);
+                canvas.snapshot(params, wim);
+//                canvas.snapshot(null, wim);
                 File file = new File("screenshot.png");
                 ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
                 // TODO in separate thread
@@ -269,6 +305,19 @@ public class ScreenshotController {
             return;
         }
     }
+
+    //=====================
+    //======editor========
+    //====================
+    @FXML
+    JFXColorPicker colorPicker;
+    @FXML
+    JFXSlider sizeSlider;
+    @FXML
+    Canvas sizeCircleCanvas;
+    GraphicsContext gcCircle;
+    @FXML
+    JFXComboBox <Label> chooseToolBox;
 
 
     //===========================================
