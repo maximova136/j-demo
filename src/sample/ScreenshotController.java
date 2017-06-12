@@ -18,6 +18,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 import static sample.Main.db;
 
@@ -75,7 +77,7 @@ public class ScreenshotController {
     @FXML
     public void onMouseClicked() {
         System.out.println("on mouse clicked");
-        Main.captureWindowController.prepareForCapture(chooseButton.isDisable());
+        Main.captureWindowController.prepareForCapture(chooseButton.isSelected());
     }
 
     private ArrayList<Node> children;
@@ -137,7 +139,10 @@ public class ScreenshotController {
                 currentTool.setSize(sizeSlider.getValue());
             }
         });
-        chooseToolBox.valueProperty().setValue(new Label("Pen"));
+
+        Platform.runLater(()->{
+            chooseToolBox.setValue(chooseToolBox.getItems().get(0));
+        });
 
         gcCircle = sizeCircleCanvas.getGraphicsContext2D();
         gcCircle.setFill(Color.WHITE);
@@ -164,6 +169,10 @@ public class ScreenshotController {
 
                 currentTool.setColor(newValue);
             }
+        });
+
+        Platform.runLater(()->{
+           colorPicker.setValue(Color.DARKRED);
         });
 
         canvas.setOnMouseDragged(e -> {
@@ -253,14 +262,19 @@ public class ScreenshotController {
                             });
                             cloudHost.upload(file);
                             System.out.println(cloudHost.getLastImageUrl());
-                            System.out.println(cloudHost.getLastPublicId());
-                            System.out.println(cloudHost.getPreviewImageUrl(cloudHost.getLastPublicId()));
+
+                            copyTextToClipboard(cloudHost.getLastImageUrl());
+
                             writeToDB(cloudHost.getLastPublicId());
                             Platform.runLater(() -> {
                                 setOnUploading(false);
                             });
                         } catch (IOException e) {
                             e.printStackTrace();
+                        } catch (IllegalArgumentException eia) {
+                            eia.printStackTrace();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
                 }.start();
@@ -294,6 +308,46 @@ public class ScreenshotController {
     static Image imageOld;
     private Tool currentTool = null;
 
+    public void copyTextToClipboard(String text) {
+        ClipboardContent content = new ClipboardContent();
+        content.putString(text);
+        Platform.runLater(() -> {
+            Main.clipboard.setContent(content);
+        });
+        // TODO notification about copied link
+    }
+
+    public void copyImageToClipboard(Image image) {
+        ClipboardContent content = new ClipboardContent();
+        content.putImage(image);
+        Platform.runLater(() -> {
+            Main.clipboard.setContent(content);
+        });
+        // TODO notification about copied link
+    }
+
+    public void copyImageToClipboard(String url) {
+        ClipboardContent content = new ClipboardContent();
+
+        new Thread() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+//                            setOnUploading(true);
+                });
+                Image image = new Image(url);
+                content.putImage(image);
+                Platform.runLater(() -> {
+//                            setOnUploading(false);
+                });
+            }
+        }.start();
+
+        Platform.runLater(() -> {
+            Main.clipboard.setContent(content);
+        });
+        // TODO notification about copied link
+    }
 
     //===========================================
     //=======Catalogue===========================
