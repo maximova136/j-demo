@@ -15,9 +15,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import javafx.scene.image.*;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,6 +35,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -252,6 +252,7 @@ public class ScreenshotController {
                 canvas.snapshot(params, wim);
 //                canvas.snapshot(null, wim);
                 File file = new File("screenshot.png");
+                file.createNewFile();
                 ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
                 new Thread() {
                     @Override
@@ -317,7 +318,7 @@ public class ScreenshotController {
         // TODO notification about copied link
     }
 
-    public void copyImageToClipboard(Image image) {
+    public void copyImageToClipboard(WritableImage image) {
         ClipboardContent content = new ClipboardContent();
         content.putImage(image);
         Platform.runLater(() -> {
@@ -325,28 +326,20 @@ public class ScreenshotController {
         });
         // TODO notification about copied link
     }
-
-    public void copyImageToClipboard(String url) {
+    
+    public void copyImageToClipboard(Image image) {
+        PixelReader pixelReader = image.getPixelReader();
+        WritableImage wi = new WritableImage(pixelReader, (int)image.getWidth(), (int) image.getHeight());
         ClipboardContent content = new ClipboardContent();
-
-        new Thread() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-//                            setOnUploading(true);
-                });
-                Image image = new Image(url);
-                content.putImage(image);
-                Platform.runLater(() -> {
-//                            setOnUploading(false);
-                });
-            }
-        }.start();
-
+        content.putImage(wi);
         Platform.runLater(() -> {
             Main.clipboard.setContent(content);
         });
         // TODO notification about copied link
+    }
+
+    public void copyImageToClipboard(String url) {
+        copyImageToClipboard(new Image(url));
     }
 
     //===========================================
