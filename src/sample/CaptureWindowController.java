@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
 public class CaptureWindowController extends Stage {
     // Service
     final CaptureService captureService = new CaptureService();
-//    CaptureService captureService = new CaptureService();
+    //    CaptureService captureService = new CaptureService();
     public Thread capturingThread;
     @FXML
     private StackPane stackPane;
@@ -78,7 +78,7 @@ public class CaptureWindowController extends Stage {
             yFrom = (int) m.getScreenY();
         });
 
-            mainCanvas.setOnMouseDragged(m -> {
+        mainCanvas.setOnMouseDragged(m -> {
             xNow = (int) m.getScreenX();
             yNow = (int) m.getScreenY();
             repaintCanvas();
@@ -136,7 +136,7 @@ public class CaptureWindowController extends Stage {
                             } catch (AWTException ex) {
                                 Logger.getLogger(getClass().getName()).log(Level.INFO, null, ex);
                                 return;
-                            } catch (IllegalArgumentException ex2){
+                            } catch (IllegalArgumentException ex2) {
                                 Logger.getLogger(getClass().getName()).log(Level.INFO, null, ex2);
                                 return;
                             }
@@ -190,7 +190,6 @@ public class CaptureWindowController extends Stage {
         gc.setFill(Color.rgb(0, 0, 0, 0.5)); // полупрозрачный черный
 
         // действия для таблички с надписью
-        double middle = UPPER_LEFT_X + frameWidth / 2;
         int sizeLabelWidth = 70;
         int sizeLabelHeight = 20;
         gc.fillRect(UPPER_LEFT_X, UPPER_LEFT_Y < sizeLabelHeight ? UPPER_LEFT_Y : UPPER_LEFT_Y - sizeLabelHeight, sizeLabelWidth, sizeLabelHeight);
@@ -211,6 +210,12 @@ public class CaptureWindowController extends Stage {
 
     // prepare window for user
     public void prepareForCapture() {
+        xFrom = 0;
+        yFrom = 0;
+        xNow = 0;
+        yNow = 0;
+        UPPER_LEFT_X = 0;
+        UPPER_LEFT_Y = 0;
         repaintCanvas();
         show();
 //        ScreenshotController.getPrimaryStage().close();
