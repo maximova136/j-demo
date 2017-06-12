@@ -208,8 +208,9 @@ public class CaptureWindowController extends Stage {
         repaintCanvas();
     }
 
+    static boolean isHideEnabled = true;
     // prepare window for user
-    public void prepareForCapture() {
+    public void prepareForCapture(boolean hideEnable) {
         xFrom = 0;
         yFrom = 0;
         xNow = 0;
@@ -218,8 +219,11 @@ public class CaptureWindowController extends Stage {
         UPPER_LEFT_Y = 0;
         repaintCanvas();
         show();
+        isHideEnabled = hideEnable;
 //        ScreenshotController.getPrimaryStage().close();
-        Main.stage.hide();
+        if (isHideEnabled) {
+            Main.stage.hide();
+        }
     }
 
 

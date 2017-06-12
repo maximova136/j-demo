@@ -40,7 +40,7 @@ public class Main extends Application implements NativeKeyListener {
         System.out.println("Key Released: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
         if (e.getKeyCode() == NativeKeyEvent.VC_PRINTSCREEN) {
             Platform.runLater(() -> {
-                captureWindowController.prepareForCapture();
+                captureWindowController.prepareForCapture(true);
                 System.out.println("prepared for capture");
             });
         }
