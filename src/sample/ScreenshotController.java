@@ -18,13 +18,10 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.*;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
@@ -32,6 +29,7 @@ import org.controlsfx.control.Notifications;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -211,12 +209,25 @@ public class ScreenshotController {
 
 //        masonryPane.setStyle("-fx-border-color: black");
 
-
         scrollPane.setStyle("-fx-font-size: 20;");
-        scrollPane.getMainHeader().setVisible(false);
-        scrollPane.getCondensedHeader().setVisible(false);
+        Image image = new Image("file:background.jpg");
+        BackgroundImage myBI= new BackgroundImage(image,
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        scrollPane.getMainHeader().setBackground(new Background(myBI));
+        scrollPane.getCondensedHeader().setBackground(new Background(myBI));
 
         previewImageUrl = null;
+
+        buttonDel.setGraphic(new ImageView(new Image("file:delete.png")));
+        buttonCopy.setGraphic(new ImageView(new Image("file:content_copy.png")));
+        buttonUrl.setGraphic(new ImageView(new Image("file:http.png")));
+        uploadButton.setGraphic(new ImageView(new Image("file:cloud_upload.png")));
+        clickButton.setGraphic(new ImageView(new Image("file:photo_camera.png")));
+
+        buttonDel.setPadding(new Insets(50, 30, 70, 30));
+        buttonCopy.setPadding(new Insets(50, 30, 70, 30));
+        buttonUrl.setPadding(new Insets(50, 30, 70, 30));
 
         imagePreview.setImage(null);
         spinner.setVisible(false);
@@ -232,7 +243,6 @@ public class ScreenshotController {
 
     @FXML
     JFXSpinner spinner;
-
     @FXML
     JFXButton uploadButton;
 
@@ -357,7 +367,7 @@ public class ScreenshotController {
     @FXML
     VBox vBox;
     @FXML
-    SVGPath svg1, svg2, svg3;
+    JFXButton buttonDel, buttonCopy, buttonUrl;
 
     private void contentGallery() {
         children.clear();
@@ -371,11 +381,7 @@ public class ScreenshotController {
             ImageView labelImageView = new ImageView();
             labelImageView.setImage(image);
             Label label = new Label();
-//            label.maxHeight(200);
-//            label.maxWidth(250);
-//            label.setStyle("-fx-background-color: black");
-////            label.setPrefSize(250, 200);
-//            label.setStyle("-fx-border-color: black");
+            label.setPrefSize(250,200);
             label.setGraphic(labelImageView);
             label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -427,4 +433,14 @@ public class ScreenshotController {
             previewImageUrl = null;
         });
     }
+
+    @FXML
+    public void buttonCopy(){
+        copyImageToClipboard(new Image(cloudHost.getImageUrl((CloudHost.getPublicID(previewImageUrl)))));
+    }
+    @FXML
+    public void buttonURL(){
+        copyTextToClipboard(cloudHost.getImageUrl((CloudHost.getPublicID(previewImageUrl))));
+    }
+
 }

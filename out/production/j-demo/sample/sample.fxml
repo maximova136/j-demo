@@ -50,7 +50,7 @@
                         <Group BorderPane.alignment="CENTER">
                            <children>
                               <JFXSpinner fx:id="spinner" layoutX="122.0" layoutY="200.0" prefHeight="150.0" />
-                              <JFXButton fx:id="uploadButton" layoutX="73.0" layoutY="200.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" text="Upload" />
+                              <JFXButton fx:id="uploadButton" layoutX="73.0" layoutY="200.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" />
                            </children>
                         </Group>
                      </bottom>
@@ -58,7 +58,7 @@
                         <Group BorderPane.alignment="CENTER">
                            <children>
                               <JFXToggleButton fx:id="chooseButton" contentDisplay="BOTTOM" layoutX="48.0" layoutY="82.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="98.0" selected="true" text="Hide app " textAlignment="CENTER" />
-                              <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="48.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#onMouseClicked" prefHeight="25.0" prefWidth="100.0" ripplerFill="#e88282" text="PrScr" textOverrun="LEADING_ELLIPSIS" wrapText="true">
+                              <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="48.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#onMouseClicked" prefHeight="25.0" prefWidth="100.0" ripplerFill="#e88282" textOverrun="LEADING_ELLIPSIS" wrapText="true">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -78,15 +78,14 @@
                <items>
                   <VBox fx:id="vBox">
                       <children>
-                          <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <SVGPath fx:id="svg1" content="M40,60 C42,48 44,30 25,32" />
-                              <SVGPath fx:id="svg2" content="M40,60 C42,48 44,30 25,32" />
-                              <SVGPath fx:id="svg3" content="M40,60 C42,48 44,30 25,32" />
+                              <JFXButton fx:id="buttonDel" onMouseClicked="#removeImage" />
+                              <JFXButton fx:id="buttonCopy" onMouseClicked="#buttonCopy" />
+                              <JFXButton fx:id="buttonUrl" onMouseClicked="#buttonURL" />
                            </children>
                         </HBox>
-                          <JFXButton onMouseClicked="#removeImage" prefHeight="25.0" prefWidth="180.0" text="Remove Image" />
+                          <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
                       </children>
                   </VBox>
                    <JFXScrollPane fx:id="scrollPane">
