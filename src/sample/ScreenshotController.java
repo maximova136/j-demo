@@ -196,6 +196,7 @@ public class ScreenshotController {
             }
         });
 
+
         ////       ____
         ////      /----\
         ////      |----|
@@ -248,6 +249,8 @@ public class ScreenshotController {
     public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
     }
+    @FXML
+    JFXTextArea helpText;
 
     @FXML
     JFXButton copyButton;
@@ -300,15 +303,17 @@ public class ScreenshotController {
                             copyTextToClipboard(cloudHost.getLastImageUrl());
 
                             writeToDB(cloudHost.getLastPublicId());
-                            Platform.runLater(() -> {
-                                setOnUploading(false);
-                            });
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (IllegalArgumentException eia) {
                             eia.printStackTrace();
                         } catch (Exception ex) {
                             ex.printStackTrace();
+                        } finally {
+                            Platform.runLater(() -> {
+                                setOnUploading(false);
+                            });
                         }
                     }
                 }.start();
@@ -347,8 +352,8 @@ public class ScreenshotController {
         content.putString(text);
         Platform.runLater(() -> {
             Main.clipboard.setContent(content);
+            Notifications.create().title("Notification").text("Link has been copied to the clipboard").showInformation();
         });
-        // TODO notification about copied link
     }
 
     public void copyImageToClipboard(WritableImage image) {
@@ -356,8 +361,8 @@ public class ScreenshotController {
         content.putImage(image);
         Platform.runLater(() -> {
             Main.clipboard.setContent(content);
+            Notifications.create().title("Notification").text("Image has been copied to the clipboard").showInformation();
         });
-        // TODO notification about copied link
     }
 
     public void copyImageToClipboard(Image image) {
@@ -367,8 +372,8 @@ public class ScreenshotController {
         content.putImage(wi);
         Platform.runLater(() -> {
             Main.clipboard.setContent(content);
+            Notifications.create().title("Notification").text("Image has been copied to the clipboard").showInformation();
         });
-        // TODO notification about copied link
     }
 
     public void copyImageToClipboard(String url) {

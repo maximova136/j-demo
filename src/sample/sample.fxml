@@ -107,4 +107,17 @@
             </SplitPane>
         </content>
     </Tab>
+    <Tab text="Help">
+        <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <children>
+                    <JFXTextArea editable="false" layoutX="34.0" layoutY="24.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="305.0" prefWidth="337.0" promptText="Shortcuts" scrollLeft="40.0" text="  To enter part screen selection mode you should: &#10;&#9;  press Print Screen on your keyboard or &#10;&#9;  press on the first icon at the Editor tab.&#10;&#10;&#10;&#9;&#9;&#9;&#9;Shortcuts&#10;&#10;Print Screen  - works even when app is minimized.&#10;&#9;     Enter or Space - to finish selection.&#10;&#9;Q or Backspace - to exit selection mode.&#10;" wrapText="true" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="229.0" AnchorPane.topAnchor="24.0">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </JFXTextArea>
+                </children>
+            </AnchorPane>
+        </content>
+    </Tab>
 </JFXTabPane>
