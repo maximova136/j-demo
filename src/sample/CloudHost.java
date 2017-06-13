@@ -70,7 +70,7 @@ public class CloudHost {
     }
 
     public String getImageUrl(String public_id) {
-        return urlHead + "/q100/" + public_id;
+        return urlHead + "/q_100/" + public_id;
     }
 
     public String getPreviewImageUrl(String public_id) {

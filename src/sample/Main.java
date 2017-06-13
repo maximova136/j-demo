@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.Clipboard;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.jnativehook.GlobalScreen;
@@ -15,6 +16,7 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
+import java.io.File;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,9 +87,12 @@ public class Main extends Application implements NativeKeyListener {
     public static Stage stage;
     public static CaptureWindowController captureWindowController;
 
+    public static Clipboard clipboard;
+
     @Override
     public void start(Stage primaryStage) { //throws Exception {
         try {
+            clipboard = Clipboard.getSystemClipboard();
             stage = primaryStage;
             // root Node - корневой узел
             FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
@@ -144,6 +149,8 @@ public class Main extends Application implements NativeKeyListener {
             System.err.println(ex.getMessage());
         }
         System.out.println("Unregistered successfully");
+        File file = new File("screenshot.png");
+        file.delete();
         System.runFinalization();
         System.exit(0);
     }
