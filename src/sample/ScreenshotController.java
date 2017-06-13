@@ -121,18 +121,23 @@ public class ScreenshotController {
 //        scrollPaneCanvas.setContent(null);
 
         //==== editor =====
-        chooseToolBox.getItems().add(new Label("Pen"));
-        chooseToolBox.getItems().add(new Label("Eraser"));
-        chooseToolBox.setPromptText("select tool");
+        penLabel = new Label("pen");
+        penLabel.setGraphic(new ImageView(new Image("file:brush18dp.png")));
+        penLabel.setId("pen");
+
+        eraserLabel = new Label("eraser");
+        eraserLabel.setGraphic(new ImageView(new Image("file:eraser18dp.png")));
+        eraserLabel.setId("eraser");
+        chooseToolBox.getItems().addAll(penLabel, eraserLabel);
 
         chooseToolBox.valueProperty().addListener(new ChangeListener<Label>() {
             @Override
             public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
-                System.out.println("new value:" + newValue.getText());
-                if (newValue.getText().equalsIgnoreCase("pen")) {
+                System.out.println("new value:" + newValue.getId());
+                if (newValue.getId().equalsIgnoreCase("pen")) {
                     currentTool = penTool;
                     currentTool.setColor(colorPicker.getValue());
-                } else if (newValue.getText().equalsIgnoreCase("eraser")) {
+                } else if (newValue.getId().equalsIgnoreCase("eraser")) {
                     eraserTool.setImage(imageOld);
                     currentTool = eraserTool;
                 }
@@ -140,7 +145,7 @@ public class ScreenshotController {
             }
         });
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             chooseToolBox.setValue(chooseToolBox.getItems().get(0));
         });
 
@@ -171,8 +176,8 @@ public class ScreenshotController {
             }
         });
 
-        Platform.runLater(()->{
-           colorPicker.setValue(Color.DEEPPINK);
+        Platform.runLater(() -> {
+            colorPicker.setValue(Color.DEEPPINK);
         });
 
         canvas.setOnMouseDragged(e -> {
@@ -213,7 +218,7 @@ public class ScreenshotController {
 
         scrollPane.setStyle("-fx-font-size: 20;");
         Image image = new Image("file:background.jpg");
-        BackgroundImage myBI= new BackgroundImage(image,
+        BackgroundImage myBI = new BackgroundImage(image,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
         scrollPane.getMainHeader().setBackground(new Background(myBI));
@@ -226,6 +231,7 @@ public class ScreenshotController {
         buttonUrl.setGraphic(new ImageView(new Image("file:http.png")));
         uploadButton.setGraphic(new ImageView(new Image("file:cloud_upload.png")));
         clickButton.setGraphic(new ImageView(new Image("file:photo_camera.png")));
+        copyButton.setGraphic(new ImageView(new Image("file:content_copy.png", 30.0, 30.0, true, false)));
 
         buttonDel.setPadding(new Insets(50, 30, 70, 30));
         buttonCopy.setPadding(new Insets(50, 30, 70, 30));
@@ -244,9 +250,24 @@ public class ScreenshotController {
     }
 
     @FXML
+    JFXButton copyButton;
+
+    @FXML
+    public void onCopyClicked() {
+        WritableImage wim = new WritableImage(canvasWidth, canvasHeight);
+        SnapshotParameters params = new SnapshotParameters();
+        params.setFill(Color.TRANSPARENT);
+        canvas.snapshot(params, wim);
+        copyImageToClipboard(wim);
+    }
+
+    @FXML
     JFXSpinner spinner;
     @FXML
     JFXButton uploadButton;
+
+    static Label penLabel;
+    static Label eraserLabel;
 
     // true - busy, false - clickable
     private void setOnUploading(boolean isBusy) {
@@ -341,7 +362,7 @@ public class ScreenshotController {
 
     public void copyImageToClipboard(Image image) {
         PixelReader pixelReader = image.getPixelReader();
-        WritableImage wi = new WritableImage(pixelReader, (int)image.getWidth(), (int) image.getHeight());
+        WritableImage wi = new WritableImage(pixelReader, (int) image.getWidth(), (int) image.getHeight());
         ClipboardContent content = new ClipboardContent();
         content.putImage(wi);
         Platform.runLater(() -> {
@@ -390,7 +411,7 @@ public class ScreenshotController {
                         ImageView labelImageView = new ImageView();
                         labelImageView.setImage(image);
                         Label label = new Label();
-            label.setPrefSize(250,200);
+                        label.setPrefSize(250, 200);
                         label.setGraphic(labelImageView);
                         label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                             @Override
@@ -453,11 +474,12 @@ public class ScreenshotController {
     }
 
     @FXML
-    public void buttonCopy(){
+    public void buttonCopy() {
         copyImageToClipboard(new Image(cloudHost.getImageUrl((CloudHost.getPublicID(previewImageUrl)))));
     }
+
     @FXML
-    public void buttonURL(){
+    public void buttonURL() {
         copyTextToClipboard(cloudHost.getImageUrl((CloudHost.getPublicID(previewImageUrl))));
     }
 
