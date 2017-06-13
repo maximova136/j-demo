@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
@@ -17,86 +9,115 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
-
-<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="500.0" minWidth="800.0" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ScreenshotController">
-   <tabs>
-      <Tab text="Editor">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="380.0" prefWidth="600.0">
-               <children>
-                  <ScrollPane fx:id="scrollPaneCanvas" layoutX="119.0" layoutY="15.0" prefHeight="432.0" prefWidth="667.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="119.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                     <content>
-                        <Canvas fx:id="canvas" height="430.0" width="519.0" AnchorPane.bottomAnchor="98.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0" />
-                     </content>
-                  </ScrollPane>
-                  <JFXToolbar layoutX="1.0" layoutY="1.0" prefHeight="470.0" prefWidth="74.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-                     <center>
+<JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="600.0" minWidth="800.0"
+            prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sample.ScreenshotController">
+    <Tab text="Editor">
+        <AnchorPane minHeight="400.0" minWidth="500.0" prefHeight="380.0" prefWidth="600.0">
+            <children>
+                <ScrollPane fx:id="scrollPaneCanvas" layoutX="119.0" layoutY="15.0" prefHeight="432.0"
+                            prefWidth="667.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="119.0"
+                            AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                    <content>
+                        <Canvas fx:id="canvas" height="430.0" width="519.0" AnchorPane.bottomAnchor="98.0"
+                                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0"/>
+                    </content>
+                </ScrollPane>
+                <JFXToolbar layoutX="1.0" layoutY="1.0" prefHeight="470.0" prefWidth="74.0"
+                            AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                    <center>
                         <Group>
-                           <children>
-                              <JFXColorPicker fx:id="colorPicker" layoutY="-35.0" rotate="90.0" BorderPane.alignment="CENTER">
-                                 <opaqueInsets>
-                                    <Insets />
-                                 </opaqueInsets>
-                              </JFXColorPicker>
-                              <JFXSlider fx:id="sizeSlider" layoutX="9.0" layoutY="25.0" max="25.0" nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="114.0" prefWidth="56.0" value="10.0" />
-                              <Canvas fx:id="sizeCircleCanvas" height="30.0" layoutX="22.0" layoutY="156.0" width="30.0" />
-                              <JFXComboBox fx:id="chooseToolBox" layoutX="9.0" layoutY="-107.0" prefHeight="21.0" prefWidth="56.0" style="-fx-background-color: #ffffff;" />
-                           </children>
+                            <children>
+                                <JFXColorPicker fx:id="colorPicker" layoutX="10.0" layoutY="-35.0" rotate="90.0"
+                                                BorderPane.alignment="CENTER">
+                                    <opaqueInsets>
+                                        <Insets/>
+                                    </opaqueInsets>
+                                </JFXColorPicker>
+                                <JFXSlider fx:id="sizeSlider" layoutX="20.0" layoutY="25.0" max="30.0" min="0.5"
+                                           nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="114.0"
+                                           prefWidth="56.0" value="17.0"/>
+                                <Canvas fx:id="sizeCircleCanvas" height="30.0" layoutX="32.0" layoutY="156.0"
+                                        width="31.0"/>
+                                <JFXButton fx:id="copyButton" layoutX="24.0" layoutY="200.0"
+                                           onMouseClicked="#onCopyClicked"/>
+                                <JFXComboBox fx:id="chooseToolBox" layoutX="9.0" layoutY="-107.0" prefHeight="30.0"
+                                             prefWidth="82.0"/>
+                            </children>
                         </Group>
-                     </center>
-                     <bottom>
+                    </center>
+                    <bottom>
                         <Group BorderPane.alignment="CENTER">
-                           <children>
-                              <JFXSpinner fx:id="spinner" layoutX="122.0" layoutY="200.0" prefHeight="150.0" />
-                              <JFXButton fx:id="uploadButton" layoutX="73.0" layoutY="200.0" mnemonicParsing="false" onMouseClicked="#onUploadClicked" />
-                           </children>
+                            <children>
+                                <JFXSpinner fx:id="spinner" layoutX="130.0" layoutY="210.0" prefHeight="100.0"/>
+                                <JFXButton fx:id="uploadButton" layoutX="73.0" layoutY="200.0"
+                                           mnemonicParsing="false" onMouseClicked="#onUploadClicked"/>
+                            </children>
                         </Group>
-                     </bottom>
-                     <top>
+                    </bottom>
+                    <top>
                         <Group BorderPane.alignment="CENTER">
-                           <children>
-                              <JFXToggleButton fx:id="chooseButton" contentDisplay="BOTTOM" layoutX="48.0" layoutY="82.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="98.0" selected="true" text="Hide app " textAlignment="CENTER" />
-                              <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE" depthTest="ENABLE" layoutX="48.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#onMouseClicked" prefHeight="25.0" prefWidth="100.0" ripplerFill="#e88282" textOverrun="LEADING_ELLIPSIS" wrapText="true">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </JFXButton>
-                           </children>
+                            <children>
+                                <JFXToggleButton fx:id="chooseButton" contentDisplay="BOTTOM" layoutX="55.0"
+                                                 layoutY="100.0" mnemonicParsing="false" prefHeight="40.0"
+                                                 prefWidth="80.0" selected="true" text="Hide"
+                                                 textAlignment="CENTER">
+                                    <font>
+                                        <Font size="18.5"/>
+                                    </font>
+                                </JFXToggleButton>
+                                <JFXButton fx:id="clickButton" blendMode="SRC_ATOP" cache="true" cacheHint="ROTATE"
+                                           depthTest="ENABLE" layoutX="48.0" layoutY="45.0" mnemonicParsing="false"
+                                           onMouseClicked="#onMouseClicked" prefHeight="25.0" prefWidth="100.0"
+                                           textOverrun="LEADING_ELLIPSIS" wrapText="true">
+                                </JFXButton>
+                            </children>
                         </Group>
-                     </top>
-                  </JFXToolbar>
+                    </top>
+                </JFXToolbar>
 
-               </children>
+            </children>
+        </AnchorPane>
+    </Tab>
+    <Tab text="Catalogue">
+        <content>
+            <SplitPane fx:id="splitPane" dividerPositions="0.3">
+                <items>
+                    <VBox fx:id="vBox">
+                        <children>
+                            <HBox prefHeight="100.0" prefWidth="200.0">
+                                <children>
+                                    <JFXButton fx:id="buttonDel" onMouseClicked="#removeImage"/>
+                                    <JFXButton fx:id="buttonCopy" onMouseClicked="#buttonCopy"/>
+                                    <JFXButton fx:id="buttonUrl" onMouseClicked="#buttonURL"/>
+                                </children>
+                            </HBox>
+                            <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="400.0" pickOnBounds="true"
+                                       preserveRatio="true"/>
+                        </children>
+                    </VBox>
+                    <JFXScrollPane fx:id="scrollPane">
+                        <content>
+                            <JFXMasonryPane fx:id="masonryPane">
+                            </JFXMasonryPane>
+                        </content>
+                    </JFXScrollPane>
+                </items>
+            </SplitPane>
+        </content>
+    </Tab>
+    <Tab text="Help">
+        <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <children>
+                    <JFXTextArea editable="false" layoutX="34.0" layoutY="24.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="305.0" prefWidth="337.0" promptText="Shortcuts" scrollLeft="40.0" text="  To enter part screen selection mode you should: &#10;&#9;  press Print Screen on your keyboard or &#10;&#9;  press on the first icon at the Editor tab.&#10;&#10;&#10;&#9;&#9;&#9;&#9;Shortcuts&#10;&#10;Print Screen  - works even when app is minimized.&#10;&#9;     Enter or Space - to finish selection.&#10;&#9;Q or Backspace - to exit selection mode.&#10;" wrapText="true" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="229.0" AnchorPane.topAnchor="24.0">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </JFXTextArea>
+                </children>
             </AnchorPane>
         </content>
-      </Tab>
-      <Tab text="Catalogue">
-         <content>
-            <SplitPane fx:id="splitPane" dividerPositions="0.3">
-               <items>
-                  <VBox fx:id="vBox">
-                      <children>
-                        <HBox prefHeight="100.0" prefWidth="200.0">
-                           <children>
-                              <JFXButton fx:id="buttonDel" onMouseClicked="#removeImage" />
-                              <JFXButton fx:id="buttonCopy" onMouseClicked="#buttonCopy" />
-                              <JFXButton fx:id="buttonUrl" onMouseClicked="#buttonURL" />
-                           </children>
-                        </HBox>
-                          <ImageView fx:id="imagePreview" fitHeight="300.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
-                      </children>
-                  </VBox>
-                   <JFXScrollPane fx:id="scrollPane">
-                       <content>
-                           <JFXMasonryPane fx:id="masonryPane">
-                           </JFXMasonryPane>
-                       </content>
-                   </JFXScrollPane>
-               </items>
-            </SplitPane>
-         </content>
-      </Tab>
-   </tabs>
+    </Tab>
 </JFXTabPane>

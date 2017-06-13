@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -111,13 +112,6 @@ public class Main extends Application implements NativeKeyListener {
                 }
             });
 
-            // TODO remove if isn't needed
-            primaryStage.setOnShown(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent event) {
-                    System.out.println("SHOWN primary stage");
-                }
-            });
             sc.setPrimaryStage(primaryStage);
             loader.setController(sc);
 
@@ -129,6 +123,9 @@ public class Main extends Application implements NativeKeyListener {
                     System.out.println("minimized: " + newValue.booleanValue());
                 }
             });
+
+            Image applicationIcon = new Image("file:LOGO.png");
+            primaryStage.getIcons().add(applicationIcon);
 
             // scene - сцена, stage - подмостки
             primaryStage.setScene(new Scene(root));

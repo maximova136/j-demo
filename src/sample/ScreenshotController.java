@@ -22,6 +22,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
@@ -68,6 +69,7 @@ public class ScreenshotController {
             gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight());
             canvasWidth = (int) image.getWidth();
             canvasHeight = (int) image.getHeight();
+//            canvas.widthProperty(). // doesn't work
         });
         primaryStage.setIconified(false);
     }
@@ -119,18 +121,23 @@ public class ScreenshotController {
 //        scrollPaneCanvas.setContent(null);
 
         //==== editor =====
-        chooseToolBox.getItems().add(new Label("Pen"));
-        chooseToolBox.getItems().add(new Label("Eraser"));
-        chooseToolBox.setPromptText("select tool");
+        penLabel = new Label("pen");
+        penLabel.setGraphic(new ImageView(new Image("file:brush18dp.png")));
+        penLabel.setId("pen");
+
+        eraserLabel = new Label("eraser");
+        eraserLabel.setGraphic(new ImageView(new Image("file:eraser18dp.png")));
+        eraserLabel.setId("eraser");
+        chooseToolBox.getItems().addAll(penLabel, eraserLabel);
 
         chooseToolBox.valueProperty().addListener(new ChangeListener<Label>() {
             @Override
             public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
-                System.out.println("new value:" + newValue.getText());
-                if (newValue.getText().equalsIgnoreCase("pen")) {
+                System.out.println("new value:" + newValue.getId());
+                if (newValue.getId().equalsIgnoreCase("pen")) {
                     currentTool = penTool;
                     currentTool.setColor(colorPicker.getValue());
-                } else if (newValue.getText().equalsIgnoreCase("eraser")) {
+                } else if (newValue.getId().equalsIgnoreCase("eraser")) {
                     eraserTool.setImage(imageOld);
                     currentTool = eraserTool;
                 }
@@ -138,7 +145,7 @@ public class ScreenshotController {
             }
         });
 
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             chooseToolBox.setValue(chooseToolBox.getItems().get(0));
         });
 
@@ -169,8 +176,8 @@ public class ScreenshotController {
             }
         });
 
-        Platform.runLater(()->{
-           colorPicker.setValue(Color.DARKRED);
+        Platform.runLater(() -> {
+            colorPicker.setValue(Color.DEEPPINK);
         });
 
         canvas.setOnMouseDragged(e -> {
@@ -188,6 +195,7 @@ public class ScreenshotController {
                 currentTool.onRelease(e);
             }
         });
+
 
         ////       ____
         ////      /----\
@@ -211,7 +219,7 @@ public class ScreenshotController {
 
         scrollPane.setStyle("-fx-font-size: 20;");
         Image image = new Image("file:background.jpg");
-        BackgroundImage myBI= new BackgroundImage(image,
+        BackgroundImage myBI = new BackgroundImage(image,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
         scrollPane.getMainHeader().setBackground(new Background(myBI));
@@ -224,6 +232,7 @@ public class ScreenshotController {
         buttonUrl.setGraphic(new ImageView(new Image("file:http.png")));
         uploadButton.setGraphic(new ImageView(new Image("file:cloud_upload.png")));
         clickButton.setGraphic(new ImageView(new Image("file:photo_camera.png")));
+        copyButton.setGraphic(new ImageView(new Image("file:content_copy.png", 30.0, 30.0, true, false)));
 
         buttonDel.setPadding(new Insets(50, 30, 70, 30));
         buttonCopy.setPadding(new Insets(50, 30, 70, 30));
@@ -240,11 +249,28 @@ public class ScreenshotController {
     public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
     }
+    @FXML
+    JFXTextArea helpText;
+
+    @FXML
+    JFXButton copyButton;
+
+    @FXML
+    public void onCopyClicked() {
+        WritableImage wim = new WritableImage(canvasWidth, canvasHeight);
+        SnapshotParameters params = new SnapshotParameters();
+        params.setFill(Color.TRANSPARENT);
+        canvas.snapshot(params, wim);
+        copyImageToClipboard(wim);
+    }
 
     @FXML
     JFXSpinner spinner;
     @FXML
     JFXButton uploadButton;
+
+    static Label penLabel;
+    static Label eraserLabel;
 
     // true - busy, false - clickable
     private void setOnUploading(boolean isBusy) {
@@ -277,15 +303,17 @@ public class ScreenshotController {
                             copyTextToClipboard(cloudHost.getLastImageUrl());
 
                             writeToDB(cloudHost.getLastPublicId());
-                            Platform.runLater(() -> {
-                                setOnUploading(false);
-                            });
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (IllegalArgumentException eia) {
                             eia.printStackTrace();
                         } catch (Exception ex) {
                             ex.printStackTrace();
+                        } finally {
+                            Platform.runLater(() -> {
+                                setOnUploading(false);
+                            });
                         }
                     }
                 }.start();
@@ -324,8 +352,8 @@ public class ScreenshotController {
         content.putString(text);
         Platform.runLater(() -> {
             Main.clipboard.setContent(content);
+            Notifications.create().title("Notification").text("Link has been copied to the clipboard").showInformation();
         });
-        // TODO notification about copied link
     }
 
     public void copyImageToClipboard(WritableImage image) {
@@ -333,19 +361,19 @@ public class ScreenshotController {
         content.putImage(image);
         Platform.runLater(() -> {
             Main.clipboard.setContent(content);
+            Notifications.create().title("Notification").text("Image has been copied to the clipboard").showInformation();
         });
-        // TODO notification about copied link
     }
-    
+
     public void copyImageToClipboard(Image image) {
         PixelReader pixelReader = image.getPixelReader();
-        WritableImage wi = new WritableImage(pixelReader, (int)image.getWidth(), (int) image.getHeight());
+        WritableImage wi = new WritableImage(pixelReader, (int) image.getWidth(), (int) image.getHeight());
         ClipboardContent content = new ClipboardContent();
         content.putImage(wi);
         Platform.runLater(() -> {
             Main.clipboard.setContent(content);
+            Notifications.create().title("Notification").text("Image has been copied to the clipboard").showInformation();
         });
-        // TODO notification about copied link
     }
 
     public void copyImageToClipboard(String url) {
@@ -374,25 +402,41 @@ public class ScreenshotController {
 //        System.out.println(children);
         int counterDBSize = db.getSizeDB();
         ArrayList<String> list = new ArrayList<>(db.showDB());
-        for (int i = 0; i < counterDBSize; i++) {
-            String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру для галереи
-            String previewUrlToImageView = cloudHost.getPreviewMiddleImageUrl(list.get(i)); //ссылка для превью миниатюры
-            Image image = new Image(previewImgUrl);
-            ImageView labelImageView = new ImageView();
-            labelImageView.setImage(image);
-            Label label = new Label();
-            label.setPrefSize(250,200);
-            label.setGraphic(labelImageView);
-            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    contentImagePreview(previewUrlToImageView);
-                }
-            });
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Platform.runLater(() -> {
+//                        setOnUploading(true);
+                    });
+                    for (int i = 0; i < counterDBSize; i++) {
+                        String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру для галереи
+                        String previewUrlToImageView = cloudHost.getPreviewMiddleImageUrl(list.get(i)); //ссылка для превью миниатюры
+                        Image image = new Image(previewImgUrl);
+                        ImageView labelImageView = new ImageView();
+                        labelImageView.setImage(image);
+                        Label label = new Label();
+                        label.setPrefSize(250, 200);
+                        label.setGraphic(labelImageView);
+                        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+                                contentImagePreview(previewUrlToImageView);
+                            }
+                        });
 
-            children.add(label);
-        }
-        System.out.println(children);
+                        children.add(label);
+                    }
+                    System.out.println(children);
+
+                    Platform.runLater(() -> {
+//                        setOnUploading(false);
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private void reloadContentGallery() {
@@ -435,11 +479,12 @@ public class ScreenshotController {
     }
 
     @FXML
-    public void buttonCopy(){
+    public void buttonCopy() {
         copyImageToClipboard(new Image(cloudHost.getImageUrl((CloudHost.getPublicID(previewImageUrl)))));
     }
+
     @FXML
-    public void buttonURL(){
+    public void buttonURL() {
         copyTextToClipboard(cloudHost.getImageUrl((CloudHost.getPublicID(previewImageUrl))));
     }
 
