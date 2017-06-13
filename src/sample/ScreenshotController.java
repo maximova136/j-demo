@@ -22,6 +22,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
@@ -68,6 +69,7 @@ public class ScreenshotController {
             gc.drawImage(image, 0, 0, image.getWidth(), image.getHeight());
             canvasWidth = (int) image.getWidth();
             canvasHeight = (int) image.getHeight();
+//            canvas.widthProperty(). // doesn't work
         });
         primaryStage.setIconified(false);
     }
@@ -170,7 +172,7 @@ public class ScreenshotController {
         });
 
         Platform.runLater(()->{
-           colorPicker.setValue(Color.DARKRED);
+           colorPicker.setValue(Color.DEEPPINK);
         });
 
         canvas.setOnMouseDragged(e -> {
@@ -336,7 +338,7 @@ public class ScreenshotController {
         });
         // TODO notification about copied link
     }
-    
+
     public void copyImageToClipboard(Image image) {
         PixelReader pixelReader = image.getPixelReader();
         WritableImage wi = new WritableImage(pixelReader, (int)image.getWidth(), (int) image.getHeight());
@@ -374,25 +376,41 @@ public class ScreenshotController {
 //        System.out.println(children);
         int counterDBSize = db.getSizeDB();
         ArrayList<String> list = new ArrayList<>(db.showDB());
-        for (int i = 0; i < counterDBSize; i++) {
-            String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру для галереи
-            String previewUrlToImageView = cloudHost.getPreviewMiddleImageUrl(list.get(i)); //ссылка для превью миниатюры
-            Image image = new Image(previewImgUrl);
-            ImageView labelImageView = new ImageView();
-            labelImageView.setImage(image);
-            Label label = new Label();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Platform.runLater(() -> {
+//                        setOnUploading(true);
+                    });
+                    for (int i = 0; i < counterDBSize; i++) {
+                        String previewImgUrl = cloudHost.getPreviewImageUrl(list.get(i)); //прямая ссылка на миниатюру для галереи
+                        String previewUrlToImageView = cloudHost.getPreviewMiddleImageUrl(list.get(i)); //ссылка для превью миниатюры
+                        Image image = new Image(previewImgUrl);
+                        ImageView labelImageView = new ImageView();
+                        labelImageView.setImage(image);
+                        Label label = new Label();
             label.setPrefSize(250,200);
-            label.setGraphic(labelImageView);
-            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    contentImagePreview(previewUrlToImageView);
-                }
-            });
+                        label.setGraphic(labelImageView);
+                        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+                                contentImagePreview(previewUrlToImageView);
+                            }
+                        });
 
-            children.add(label);
-        }
-        System.out.println(children);
+                        children.add(label);
+                    }
+                    System.out.println(children);
+
+                    Platform.runLater(() -> {
+//                        setOnUploading(false);
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private void reloadContentGallery() {
